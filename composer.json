@@ -1,0 +1,27 @@
+{
+  "name": "tinywan/storage",
+  "description": "webman storage plugin",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.4",
+    "workerman/webman-framework": "^1.2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tinywan\\Storage\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tinywan\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "workerman/webman": "^1.0",
+    "phpstan/phpstan": "^1.4",
+    "friendsofphp/php-cs-fixer": "^3.6",
+    "phpunit/phpunit": "^9.5",
+    "aliyuncs/oss-sdk-php": "^2.4"
+  }
+}
