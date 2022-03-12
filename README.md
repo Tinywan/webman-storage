@@ -16,15 +16,17 @@ composer require tinywan/storage
 ## 基本用法
 
 ```php
-use Tinywan\Storage;
+use Tinywan\Storage\Storage;
 
 // 初始化
-Storage::config();
+Storage::config(); // 默认为本地存储：local
 
 // 上传
 $res = Storage::uploadFile();
 var_dump(json_encode($res));
 ```
+> 目前只支持 `local：本地 oss：阿里云`多文件上传
+
 ### 上传成功信息
 ```json
 [
@@ -87,6 +89,16 @@ runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 |include | 被允许的文件类型列表 | ['xlsx','pdf'] |
 |exclude | 不被允许的文件类型列表 | ['png','jpg'] |
 
+## 支持上传SDK
+
+### 阿里云 OSS
+
+```php
+composer require aliyuncs/oss-sdk-php
+```
+### 腾讯云 OSS
+
+计划中...
 ## Other
 
 ### phpstan

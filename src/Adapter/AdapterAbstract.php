@@ -46,11 +46,6 @@ abstract class AdapterAbstract implements AdapterInterface
     protected int $nums;
 
     /**
-     * 文件存储目录.
-     */
-    protected string $directory;
-
-    /**
      * AdapterAbstract constructor.
      *
      * @author Tinywan(ShaoBo Wan)
@@ -63,7 +58,6 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->singleLimit = 0;
         $this->totalLimit = 0;
         $this->nums = 0;
-        $this->directory = '';
         $this->loadConfig($config);
         $this->verify();
     }
@@ -81,7 +75,6 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->singleLimit = $config['single_limit'] ?? $defaultConfig['single_limit'];
         $this->totalLimit = $config['total_limit'] ?? $defaultConfig['total_limit'];
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
-        $this->directory = $config['directory'] ?? $defaultConfig['directory'];
     }
 
     /**
