@@ -23,6 +23,10 @@ return (new PhpCsFixer\Config())
         'no_unused_imports'                     => true,  //删除未使用的use语句
         'no_whitespace_before_comma_in_array'   => true,  //删除数组声明中，每个逗号前的空格
         'no_whitespace_in_blank_line'           => true,  //删除空白行末尾的空白
-        'ordered_class_elements' => true
+        'ordered_class_elements' => true,
+        'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'line_ending' => true,
+        'single_quote' => true,
+        'array_syntax' => ['syntax' => 'short'],
     ])
     ->setFinder($finder);

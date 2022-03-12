@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @desc 阿里云OSS适配器
  *
@@ -51,7 +52,7 @@ class OssAdapter extends AdapterAbstract
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('md5', $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'] .DIRECTORY_SEPARATOR. $saveName;
+                $object = $config['dirname'].DIRECTORY_SEPARATOR.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),

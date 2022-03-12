@@ -46,18 +46,17 @@ var_dump(json_encode($res));
 > 失败，抛出`StorageAdapterException`异常
 ### 成功响应字段
 
-| 字段|类型|描述|示例值|
-|:---|:---|:---|:---|
-|key | string | 上传文件key | webman |
-|origin_name | string |原始文件名 | 常用编程软件和工具.xlsx |
-|save_name| string |保存文件名 | 03414c9bdaf7a38148742c87b96b8167.xlsx |
-|save_path| string |文件保存路径（相对） | runtime/storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
-|url| string |url访问路径 | /storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
-|unique_id| string |uniqid | 03414c9bdaf7a38148742c87b96b8167|
-|size| int |文件大小 | 15050（字节）|
-|mime_type| string |文件类型 | application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|
-|extension| string |文件扩展名 | xlsx|
-
+| 字段|描述|示例值|
+|:---|:---|:---|
+|key | 上传文件key | webman |
+|origin_name |原始文件名 | 常用编程软件和工具.xlsx |
+|save_name |保存文件名 | 03414c9bdaf7a38148742c87b96b8167.xlsx |
+|save_path|文件保存路径（相对） | runtime/storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
+|url |url访问路径 | /storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
+|unique_id|uniqid | 03414c9bdaf7a38148742c87b96b8167|
+|size |文件大小 | 15050（字节）|
+|mime_type |文件类型 | application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|
+|extension |文件扩展名 | xlsx|
 ## 上传规则
 
 默认情况下是上传到本地服务器，会在`runtime/storage`目录下面生成以当前日期为子目录，以文件流的sha1编码为文件名的文件，例如上面生成的文件名可能是：
@@ -79,6 +78,14 @@ runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 ## 上传验证
 
 支持使用验证类对上传文件的验证，包括文件大小、文件类型和后缀
+
+| 字段|描述|示例值|
+|:---|:---|:---|
+|single_limit | 单个文件的大小限制，默认200M | 1024 * 1024 * 200 |
+|total_limit | 所有文件的大小限制，默认200M | 1024 * 1024 * 200 |
+|nums | 文件数量限制，默认10 | 10 |
+|include | 被允许的文件类型列表 | ['xlsx','pdf'] |
+|exclude | 不被允许的文件类型列表 | ['png','jpg'] |
 
 ## Other
 
