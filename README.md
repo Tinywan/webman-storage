@@ -57,7 +57,7 @@ try {
 |key | 上传文件key | webman |
 |origin_name |原始文件名 | 常用编程软件和工具.xlsx |
 |save_name |保存文件名 | 03414c9bdaf7a38148742c87b96b8167.xlsx |
-|save_path|文件保存路径（相对） | runtime/storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
+|save_path|文件保存路径（相对） | /var/www/webman-admin/runtime/storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
 |url |url访问路径 | /storage/03414c9bdaf7a38148742c87b96b8167.xlsx|
 |unique_id|uniqid | 03414c9bdaf7a38148742c87b96b8167|
 |size |文件大小 | 15050（字节）|
@@ -71,7 +71,7 @@ runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 ```
 如果你希望上传的文件是可以直接访问或者下载的话，可以使用`public`存储方式。
 
-你可以在`config/plugin/tinywan/storage/pp.php`配置文件中配置上传根目录及上传规则，例如：
+你可以在`config/plugin/tinywan/storage/pp.php`配置文件中配置上传根目录，例如：
 
 ```php
 'local' => [
@@ -95,12 +95,12 @@ runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 
 ## 支持上传SDK
 
-### 阿里云 OSS
+#### 阿里云 OSS
 
 ```php
 composer require aliyuncs/oss-sdk-php
 ```
-### 腾讯云 OSS
+#### 腾讯云 OSS
 
 计划中...
 ## Other
