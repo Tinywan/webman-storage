@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage\Exception;
 
-use Webman\Exception\FileException;
-
-class StorageAdapterException extends FileException
+class StorageException extends \RuntimeException
 {
 }

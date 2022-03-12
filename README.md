@@ -17,13 +17,17 @@ composer require tinywan/storage
 
 ```php
 use Tinywan\Storage\Storage;
+use Tinywan\Storage\Exception\StorageException;
 
-// 初始化
-Storage::config(); // 默认为本地存储：local
-
-// 上传
-$res = Storage::uploadFile();
-var_dump(json_encode($res));
+try {
+    // 初始化
+    Storage::config(); // 默认为本地存储：local
+    // 上传
+    $res = Storage::uploadFile();
+    var_dump(json_encode($res));
+}catch (StorageException $exception) {
+    var_dump($exception->getMessage());
+}
 ```
 > 目前只支持 `local：本地 oss：阿里云`多文件上传
 

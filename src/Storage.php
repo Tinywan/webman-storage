@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Tinywan\Storage;
 
 use support\Container;
-use Tinywan\Storage\Exception\StorageAdapterException;
+use Tinywan\Storage\Exception\StorageException;
 
 /**
  * @see Storage
@@ -48,7 +48,7 @@ class Storage
     {
         $config = config('plugin.tinywan.storage.app.storage');
         if (!isset($config[$storage]) || empty($config[$storage]['adapter'])) {
-            throw new StorageAdapterException('对应的adapter不存在');
+            throw new StorageException('对应的adapter不存在');
         }
         static::$adapter = Container::make($config[$storage]['adapter'], []);
     }

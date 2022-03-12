@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;
 
-use Tinywan\Storage\Exception\StorageAdapterException;
+use Tinywan\Storage\Exception\StorageException;
 use Webman\Http\UploadFile;
 
 abstract class AdapterAbstract implements AdapterInterface
@@ -85,11 +85,11 @@ abstract class AdapterAbstract implements AdapterInterface
     protected function verify()
     {
         if (!$this->files) {
-            throw new StorageAdapterException('未找到符合条件的文件资源');
+            throw new StorageException('未找到符合条件的文件资源');
         }
         foreach ($this->files as $file) {
             if (!$file->isValid()) {
-                throw new StorageAdapterException('未选择文件或者无效的文件');
+                throw new StorageException('未选择文件或者无效的文件');
             }
         }
         $this->allowedFile();
@@ -119,14 +119,14 @@ abstract class AdapterAbstract implements AdapterInterface
             foreach ($this->files as $file) {
                 $fileName = $file->getUploadName();
                 if (!strpos($fileName, '.') || !in_array(substr($fileName, strripos($fileName, '.') + 1), $this->includes)) {
-                    throw new StorageAdapterException($file->getUploadName().'，文件扩展名不合法');
+                    throw new StorageException($file->getUploadName().'，文件扩展名不合法');
                 }
             }
         } elseif (!empty($this->excludes) && empty($this->includes)) {
             foreach ($this->files as $file) {
                 $fileName = $file->getUploadName();
                 if (!strpos($fileName, '.') || in_array(substr($fileName, strripos($fileName, '.') + 1), $this->excludes)) {
-                    throw new StorageAdapterException($file->getUploadName().'，文件扩展名不合法');
+                    throw new StorageException($file->getUploadName().'，文件扩展名不合法');
                 }
             }
         }
@@ -145,18 +145,18 @@ abstract class AdapterAbstract implements AdapterInterface
     {
         $fileCount = count($this->files);
         if ($fileCount > $this->nums) {
-            throw new StorageAdapterException('文件数量过多，超出系统文件数量限制');
+            throw new StorageException('文件数量过多，超出系统文件数量限制');
         }
         $totalSize = 0;
         foreach ($this->files as $k => $file) {
             $fileSize = $this->getSize($this->files[$k]);
             if ($fileSize > $this->singleLimit) {
-                throw new StorageAdapterException($file->getUploadName().'，单文件大小已超出系统限制：'.$this->singleLimit);
+                throw new StorageException($file->getUploadName().'，单文件大小已超出系统限制：'.$this->singleLimit);
             }
             $totalSize += $fileSize;
         }
         if ($totalSize > $this->totalLimit) {
-            throw new StorageAdapterException('总文件大小已超出系统最大限制：'.$this->totalLimit);
+            throw new StorageException('总文件大小已超出系统最大限制：'.$this->totalLimit);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Tinywan\Storage\Adapter;
 use OSS\Core\OssException;
 use OSS\OssClient;
 use Throwable;
-use Tinywan\Storage\Exception\StorageAdapterException;
+use Tinywan\Storage\Exception\StorageException;
 
 class OssAdapter extends AdapterAbstract
 {
@@ -66,12 +66,12 @@ class OssAdapter extends AdapterAbstract
                 ];
                 $upload = self::getInstance()->uploadFile($config['bucket'], $object, $file->getPathname());
                 if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
-                    throw new StorageAdapterException((string) $upload);
+                    throw new StorageException((string) $upload);
                 }
                 array_push($result, $temp);
             }
         } catch (Throwable|OssException $exception) {
-            throw new StorageAdapterException($exception->getMessage());
+            throw new StorageException($exception->getMessage());
         }
 
         return $result;
