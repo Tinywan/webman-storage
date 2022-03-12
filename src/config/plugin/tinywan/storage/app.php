@@ -18,12 +18,15 @@ return [
         'exclude' => [], // 文件后缀名的包括项
         'local' => [
             'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
+            'root' => runtime_path() . '/storage',
+            'dirname' => '/storage',
         ],
         'oss' => [
             'adapter' => \Tinywan\Storage\Adapter\OssAdapter::class,
             'accessKeyId' => 'xxxxxxxxxxxx',
             'accessKeySecret' => 'xxxxxxxxxxxx',
             'bucket' => 'test',
+            'dirname' => '/storage',
             'domain' => 'xxxxxxxxxxxx',
             'endpoint' => 'oss-cn.aliyuncs.com',
         ],

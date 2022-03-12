@@ -43,27 +43,27 @@ class OssAdapter extends AdapterAbstract
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function upload(array $options = []): array
+    public function uploadFile(array $options = []): array
     {
         try {
             $config = config('plugin.tinywan.storage.app.storage.oss');
             $result = [];
-            $bucket = $config['bucket'];
-            $domain = $config['domain'];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('md5', $file->getPathname());
-                $object = 'static'.DIRECTORY_SEPARATOR.$uniqueId.'.'.$file->getUploadExtension();
+                $saveName = $uniqueId.'.'.$file->getUploadExtension();
+                $object = $config['dirname'] .DIRECTORY_SEPARATOR. $saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
-                    'save_name' => $object,
-                    'save_path' => $domain.$object,
+                    'save_name' => $saveName,
+                    'save_path' => $object,
+                    'url' => $config['domain'].$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                $upload = self::getInstance()->uploadFile($bucket, $object, $file->getPathname());
+                $upload = self::getInstance()->uploadFile($config['bucket'], $object, $file->getPathname());
                 if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
                     throw new StorageAdapterException((string) $upload);
                 }

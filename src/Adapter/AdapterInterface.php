@@ -17,5 +17,5 @@ interface AdapterInterface
      *
      * @return mixed
      */
-    public function upload(array $options);
+    public function uploadFile(array $options);
 }

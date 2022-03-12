@@ -17,24 +17,26 @@ class LocalAdapter extends AdapterAbstract
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function upload(array $options = []): array
+    public function uploadFile(array $options = []): array
     {
         $result = [];
+        $config = config('plugin.tinywan.storage.app.storage.local');
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file('md5', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
-            $path = $this->directory.DIRECTORY_SEPARATOR.$saveFilename;
+            $savePath = $config['root'] .DIRECTORY_SEPARATOR. $saveFilename;
             $temp = [
                 'key' => $key,
                 'origin_name' => $file->getUploadName(),
                 'save_name' => $saveFilename,
-                'save_path' => $path,
+                'save_path' => $savePath,
+                'url' => $config['dirname'] .DIRECTORY_SEPARATOR. $saveFilename,
                 'unique_id' => $uniqueId,
                 'size' => $file->getSize(),
                 'mime_type' => $file->getUploadMineType(),
                 'extension' => $file->getUploadExtension(),
             ];
-            $file->move(public_path().$path);
+            $file->move($savePath);
             array_push($result, $temp);
         }
 
