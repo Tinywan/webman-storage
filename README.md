@@ -5,6 +5,9 @@
 [![Latest Unstable Version](http://poser.pugx.org/tinywan/storage/v/unstable)](https://packagist.org/packages/tinywan/storage) 
 [![License](http://poser.pugx.org/tinywan/storage/license)](https://packagist.org/packages/tinywan/storage) 
 [![PHP Version Require](http://poser.pugx.org/tinywan/storage/require/php)](https://packagist.org/packages/tinywan/storage)
+[![last-commit](https://img.shields.io/github/last-commit/tinywan/storage/main)]()
+[![storage tag](https://img.shields.io/github/v/tag/tinywan/storage?color=ff69b4)]()
+
 
 ## 安装
 
@@ -64,7 +67,7 @@ try {
 |extension |文件扩展名 | xlsx|
 ## 上传规则
 
-默认情况下是上传到本地服务器，会在`runtime/storage`目录下面生成以文件流的sha1编码为文件名的文件，例如上面生成的文件名可能是：
+默认情况下是上传到本地服务器，会在`runtime/storage`目录下面生成以当前日期为子目录，以文件流的sha1编码为文件名的文件，例如上面生成的文件名可能是：
 ```
 runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 ```
