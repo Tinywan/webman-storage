@@ -69,14 +69,11 @@ class CosAdapter extends AdapterAbstract
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                $upload = self::getInstance()->putObject([
+                self::getInstance()->putObject([
                     'Bucket' => $config['bucket'],
                     'Key' => $object,
-                    'Body' => $file->getPathname()
+                    'Body' => fopen($file->getPathname(),'rb')
                 ]);
-//                if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
-//                    throw new StorageException((string) $upload);
-//                }
                 array_push($result, $temp);
             }
         } catch (Throwable|CosException $exception) {

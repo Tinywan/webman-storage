@@ -97,14 +97,17 @@ runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 
 ## 支持上传SDK
 
-#### 阿里云 OSS
+#### 阿里云对象存储
 
 ```php
 composer require aliyuncs/oss-sdk-php
 ```
-#### 腾讯云 OSS
+#### 腾讯云对象存储
 
-计划中...
+```php
+composer require qcloud/cos-sdk-v5
+```
+
 ## Other
 
 ### phpstan
