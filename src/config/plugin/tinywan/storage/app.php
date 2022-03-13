@@ -29,5 +29,15 @@ return [
             'domain' => 'http://webman.oss.tinywan.com',
             'endpoint' => 'oss-cn-hangzhou.aliyuncs.com',
         ],
+        'cos' => [
+            'adapter' => \Tinywan\Storage\Adapter\CosAdapter::class,
+            'secretId' => 'xxxxxxxxxxxxx',
+            'secretKey' => 'xxxxxxxxxxxx',
+            'region' => 'xxxxxxxxxxxx',
+            'bucket' => 'resty-webman-xxxxxxxxx',
+            'dirname' => 'storage',
+            'domain' => 'http://webman.oss.tinywan.com',
+            'endpoint' => 'oss-cn-hangzhou.aliyuncs.com',
+        ],
     ],
 ];

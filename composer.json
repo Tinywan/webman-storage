@@ -22,6 +22,7 @@
     "phpstan/phpstan": "^1.4",
     "friendsofphp/php-cs-fixer": "^3.6",
     "phpunit/phpunit": "^9.5",
-    "aliyuncs/oss-sdk-php": "^2.4"
+    "aliyuncs/oss-sdk-php": "^2.4",
+    "qcloud/cos-sdk-v5": "^2.5"
   }
 }
