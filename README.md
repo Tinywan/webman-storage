@@ -108,6 +108,12 @@ composer require aliyuncs/oss-sdk-php
 composer require qcloud/cos-sdk-v5
 ```
 
+#### 七牛云云对象存储
+
+```php
+composer require qiniu/php-sdk
+```
+
 ## Other
 
 ### phpstan

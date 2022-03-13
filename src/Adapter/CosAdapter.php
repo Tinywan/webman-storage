@@ -3,6 +3,7 @@
 /**
  * @desc 腾讯云对象存储适配器
  * @help https://cloud.tencent.com/document/product/436
+ *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/13 19:54
  */
@@ -25,7 +26,6 @@ class CosAdapter extends AdapterAbstract
 
     /**
      * @desc: 对象存储实例
-     * @return Client|null
      */
     public static function getInstance(): ?Client
     {
@@ -35,9 +35,9 @@ class CosAdapter extends AdapterAbstract
                 'region' => $config['region'],
                 'schema' => 'https',
                 'credentials' => [
-                    'secretId'  => $config['secretId'],
-                    'secretKey'  => $config['secretKey']
-                ]
+                    'secretId' => $config['secretId'],
+                    'secretKey' => $config['secretKey'],
+                ],
             ]);
         }
 
@@ -72,7 +72,7 @@ class CosAdapter extends AdapterAbstract
                 self::getInstance()->putObject([
                     'Bucket' => $config['bucket'],
                     'Key' => $object,
-                    'Body' => fopen($file->getPathname(),'rb')
+                    'Body' => fopen($file->getPathname(), 'rb'),
                 ]);
                 array_push($result, $temp);
             }

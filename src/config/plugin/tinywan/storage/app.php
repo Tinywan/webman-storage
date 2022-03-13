@@ -41,11 +41,13 @@ return [
             'domain' => 'http://webman.oss.tinywan.com',
             'region' => 'ap-shanghai',
         ],
+        // 七牛云对象存储
         'qiniu' => [
             'adapter' => \Tinywan\Storage\Adapter\QiniuAdapter::class,
             'accessKey' => 'xxxxxxxxxxxxx',
             'secretKey' => 'xxxxxxxxxxxxx',
             'bucket' => 'resty-webman',
+            'dirname' => 'storage',
             'domain' => 'http://webman.oss.tinywan.com',
         ],
     ],

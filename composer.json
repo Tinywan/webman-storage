@@ -5,8 +5,7 @@
   "license": "MIT",
   "require": {
     "php": ">=7.2",
-    "workerman/webman-framework": "^1.2.1",
-    "qiniu/php-sdk": "^7.4"
+    "workerman/webman-framework": "^1.2.1"
   },
   "autoload": {
     "psr-4": {
@@ -24,6 +23,7 @@
     "friendsofphp/php-cs-fixer": "^3.6",
     "phpunit/phpunit": "^9.5",
     "aliyuncs/oss-sdk-php": "^2.4",
-    "qcloud/cos-sdk-v5": "^2.5"
+    "qcloud/cos-sdk-v5": "^2.5",
+    "qiniu/php-sdk": "^7.4"
   }
 }

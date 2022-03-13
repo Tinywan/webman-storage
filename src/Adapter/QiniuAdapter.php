@@ -22,23 +22,21 @@ class QiniuAdapter extends AdapterAbstract
 
     /**
      * @desc: 实例
-     *
      */
     public static function getInstance(): ?UploadManager
     {
         if (is_null(self::$instance)) {
-            static::$instance = new UploadManager();;
+            static::$instance = new UploadManager();
         }
 
         return static::$instance;
     }
 
-    /**
-     */
     public static function getUploadToken()
     {
-        $config = config('plugin.tinywan.storage.app.storage.oss');
-        $auth = new Auth($config['accessKey'],$config['secretKey']);
+        $config = config('plugin.tinywan.storage.app.storage.qiniu');
+        $auth = new Auth($config['accessKey'], $config['secretKey']);
+
         return $auth->uploadToken($config['bucket']);
     }
 
@@ -68,8 +66,9 @@ class QiniuAdapter extends AdapterAbstract
                     'extension' => $file->getUploadExtension(),
                 ];
                 list($ret, $err) = self::getInstance()->putFile(self::getUploadToken(), $object, $file->getPathname());
-                var_dump($ret);
-                var_dump($err);
+                if (!empty($err)) {
+                    throw new StorageException((string) $err);
+                }
                 array_push($result, $temp);
             }
         } catch (Throwable $exception) {

@@ -22,6 +22,26 @@ use Tinywan\Storage\Exception\StorageException;
 class Storage
 {
     /**
+     * 本地对象存储.
+     */
+    public const MODE_LOCAL = 'local';
+
+    /**
+     * 阿里云对象存储.
+     */
+    public const MODE_OSS = 'oss';
+
+    /**
+     * 腾讯云对象存储.
+     */
+    public const MODE_COS = 'cos';
+
+    /**
+     * 七牛云对象存储.
+     */
+    public const MODE_QINIU = 'qiniu';
+
+    /**
      * @var
      */
     protected static $adapter = null;
@@ -44,7 +64,7 @@ class Storage
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function config(string $storage = 'local')
+    public static function config(string $storage = self::MODE_LOCAL)
     {
         $config = config('plugin.tinywan.storage.app.storage');
         if (!isset($config[$storage]) || empty($config[$storage]['adapter'])) {
