@@ -1,4 +1,4 @@
-# webman storage 存储插件
+# webman storage 上传插件
 
 [![Latest Stable Version](http://poser.pugx.org/tinywan/storage/v)](https://packagist.org/packages/tinywan/storage)
 [![Total Downloads](http://poser.pugx.org/tinywan/storage/downloads)](https://packagist.org/packages/tinywan/storage)
@@ -65,7 +65,7 @@ try {
 |extension |文件扩展名 | xlsx|
 ## 上传规则
 
-默认情况下是上传到本地服务器，会在`runtime/storage`目录下面生成以当前日期为子目录，以文件流的sha1编码为文件名的文件，例如上面生成的文件名可能是：
+默认情况下是上传到本地服务器，会在`runtime/storage`目录下面生成以文件流的sha1编码为文件名的文件，例如上面生成的文件名可能是：
 ```
 runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 ```

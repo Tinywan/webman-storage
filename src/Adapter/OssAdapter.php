@@ -58,7 +58,7 @@ class OssAdapter extends AdapterAbstract
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].$object,
+                    'url' => $config['domain'].DIRECTORY_SEPARATOR.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
