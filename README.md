@@ -1,4 +1,4 @@
-# webman storage 上传插件
+# webman 简单易用多文件上传插件
 
 [![Latest Stable Version](http://poser.pugx.org/tinywan/storage/v)](https://packagist.org/packages/tinywan/storage) [![Total Downloads](http://poser.pugx.org/tinywan/storage/downloads)](https://packagist.org/packages/tinywan/storage) 
 [![Daily Downloads](http://poser.pugx.org/tinywan/storage/d/daily)](https://packagist.org/packages/tinywan/storage)
@@ -8,6 +8,12 @@
 [![last-commit](https://img.shields.io/github/last-commit/tinywan/storage/main)]()
 [![storage tag](https://img.shields.io/github/v/tag/tinywan/storage?color=ff69b4)]()
 
+目前支持以下多文件上传
+
+- `local：本地对象存储`
+- `oss：阿里云对象存储`
+- `cos：腾讯云对象存储`
+- `qiniu：七牛云对象存储`
 
 ## 安装
 
@@ -31,7 +37,6 @@ try {
     var_dump($exception->getMessage());
 }
 ```
-> 目前只支持 `local：本地 oss：阿里云`多文件上传
 
 ### 上传成功信息
 ```json
