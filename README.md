@@ -1,11 +1,8 @@
 # webman storage 上传插件
 
-[![Latest Stable Version](http://poser.pugx.org/tinywan/storage/v)](https://packagist.org/packages/tinywan/storage)
-[![Total Downloads](http://poser.pugx.org/tinywan/storage/downloads)](https://packagist.org/packages/tinywan/storage)
-[![License](http://poser.pugx.org/tinywan/storage/license)](https://packagist.org/packages/tinywan/storage)
-[![PHP Version Require](http://poser.pugx.org/tinywan/storage/require/php)](https://packagist.org/packages/tinywan/storage)
-[![storage](https://img.shields.io/github/last-commit/tinywan/storage/main)]()
-[![storage](https://img.shields.io/github/v/tag/tinywan/storage?color=ff69b4)]()
+[![Latest Stable Version](http://poser.pugx.org/tinywan/storage/v)](https://packagist.org/packages/tinywan/storage) [![Total Downloads](http://poser.pugx.org/tinywan/storage/downloads)](https://packagist.org/packages/tinywan/storage) 
+[![Daily Downloads](http://poser.pugx.org/tinywan/storage/d/daily)](https://packagist.org/packages/tinywan/storage)
+[![Latest Unstable Version](http://poser.pugx.org/tinywan/storage/v/unstable)](https://packagist.org/packages/tinywan/storage) [![License](http://poser.pugx.org/tinywan/storage/license)](https://packagist.org/packages/tinywan/storage) [![PHP Version Require](http://poser.pugx.org/tinywan/storage/require/php)](https://packagist.org/packages/tinywan/storage)
 
 ## 安装
 
