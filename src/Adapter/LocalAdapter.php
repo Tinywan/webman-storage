@@ -31,7 +31,7 @@ class LocalAdapter extends AdapterAbstract
                 'origin_name' => $file->getUploadName(),
                 'save_name' => $saveFilename,
                 'save_path' => $savePath,
-                'url' => $config['dirname'].DIRECTORY_SEPARATOR.$saveFilename,
+                'url' => $config['domain'] . $config['dirname'].DIRECTORY_SEPARATOR.$saveFilename,
                 'unique_id' => $uniqueId,
                 'size' => $file->getSize(),
                 'mime_type' => $file->getUploadMineType(),
