@@ -13,9 +13,23 @@ namespace Tinywan\Storage\Adapter;
 interface AdapterInterface
 {
     /**
-     * @desc: 上传
+     * @desc: 上传文件
      *
      * @return mixed
      */
     public function uploadFile(array $options);
+
+    /**
+     * @desc: 上传本地文件
+     *
+     * @return mixed
+     */
+    public function uploadLocalFile(array $options);
+
+    /**
+     * @desc: Base64上传文件
+     *
+     * @return mixed
+     */
+    public function uploadBase64(array $options);
 }

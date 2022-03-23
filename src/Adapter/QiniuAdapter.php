@@ -32,7 +32,7 @@ class QiniuAdapter extends AdapterAbstract
         return static::$instance;
     }
 
-    public static function getUploadToken()
+    public static function getUploadToken(): string
     {
         $config = config('plugin.tinywan.storage.app.storage.qiniu');
         $auth = new Auth($config['accessKey'], $config['secretKey']);
@@ -76,5 +76,21 @@ class QiniuAdapter extends AdapterAbstract
         }
 
         return $result;
+    }
+
+    /**
+     * @desc: 方法描述
+     * @param array $options
+     * @return array
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public function uploadLocalFile(array $options)
+    {
+        throw new StorageException('暂不支持');
+    }
+
+    public function uploadBase64(array $options)
+    {
+        throw new StorageException('暂不支持');
     }
 }

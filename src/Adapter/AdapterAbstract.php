@@ -11,10 +11,13 @@ declare(strict_types=1);
 namespace Tinywan\Storage\Adapter;
 
 use Tinywan\Storage\Exception\StorageException;
+use Tinywan\Storage\Traits\ErrorMsg;
 use Webman\Http\UploadFile;
 
 abstract class AdapterAbstract implements AdapterInterface
 {
+    use ErrorMsg;
+
     /**
      * 文件存储对象
      */

@@ -43,4 +43,20 @@ class LocalAdapter extends AdapterAbstract
 
         return $result;
     }
+
+    /**
+     * @desc: 方法描述
+     * @param array $options
+     * @return array
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public function uploadLocalFile(array $options)
+    {
+        return [];
+    }
+
+    public function uploadBase64(array $options)
+    {
+        return [];
+    }
 }
