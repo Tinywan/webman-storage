@@ -8,10 +8,9 @@ $finder = PhpCsFixer\Finder::create()
 return (new PhpCsFixer\Config())
     ->setUsingCache(false)
     ->setRules([
-        '@Symfony' => true,
         'combine_consecutive_unsets' => true,   //多个unset，合并成一个
         'class_attributes_separation' => true,
-        'heredoc_to_nowdoc'                     => true,  //删除配置中多余的空行和/或者空行。
+        'heredoc_to_nowdoc'                     => true,     //删除配置中多余的空行和/或者空行。
         'no_unreachable_default_argument_value' => false, //在函数参数中，不能有默认值在非缺省值之前的参数。有风险
         'no_useless_else'                       => true,  //删除无用的else
         'no_useless_return'                     => true,  //删除函数末尾无用的return

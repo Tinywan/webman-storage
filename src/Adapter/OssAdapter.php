@@ -90,15 +90,16 @@ class OssAdapter extends AdapterAbstract
         if (!isset($options['file_path']) || !isset($options['extension'])) {
             throw new StorageException('上传文件路径 file_path 和扩展名 extension 是必须的');
         }
+        $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $uniqueId = date('YmdHis').uniqid();
-        $object = $config['dirname'].DIRECTORY_SEPARATOR.$uniqueId.'.'.$options['extension'];
+        $object = $config['dirname'].$separator.$uniqueId.'.'.$options['extension'];
 
         $result = [
             'origin_name' => $options['file_path'],
             'save_name' => $object,
             'save_path' => $object,
-            'url' => $config['domain'].DIRECTORY_SEPARATOR.$object,
+            'url' => $config['domain'].$separator.$object,
             'unique_id' => $uniqueId,
             'size' => 0,
             'extension' => $options['extension'],
