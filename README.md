@@ -8,12 +8,20 @@
 [![last-commit](https://img.shields.io/github/last-commit/tinywan/storage/main)]()
 [![storage tag](https://img.shields.io/github/v/tag/tinywan/storage?color=ff69b4)]()
 
+## 特性
+
 目前支持以下多文件上传
 
 - `local：本地对象存储`
+    - 上传本地多文件`（默认支持）`
 - `oss：阿里云对象存储`
+    - 上传本地多文件`（默认支持）`
+    - 上传本地 `Base64`图片文件`（已支持）`
+    - 上传服务端文件`（已支持）`
 - `cos：腾讯云对象存储`
+    - 上传本地多文件`（默认支持）`
 - `qiniu：七牛云对象存储`
+    - 上传本地多文件`（默认支持）`
 
 ## 安装
 
@@ -137,8 +145,7 @@ composer require qiniu/php-sdk
 public function upload(Request $request)
 {
     $param = $request->post();
-	// 第一个参数为存储方式。第二个参数为是否本地文件（默认是）
-    Storage::config(Storage::MODE_OSS, false);
+    Storage::config(Storage::MODE_OSS, false); // 第一个参数为存储方式。第二个参数为是否本地文件（默认是）
     $r = Storage::uploadBase64($param);
     var_dump($r);
 }
