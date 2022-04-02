@@ -22,16 +22,17 @@ class LocalAdapter extends AdapterAbstract
     {
         $result = [];
         $config = config('plugin.tinywan.storage.app.storage.local');
+        $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file('md5', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
-            $savePath = $config['root'].DIRECTORY_SEPARATOR.$saveFilename;
+            $savePath = $config['root'].$separator.$saveFilename;
             $temp = [
                 'key' => $key,
                 'origin_name' => $file->getUploadName(),
                 'save_name' => $saveFilename,
                 'save_path' => $savePath,
-                'url' => $config['domain'] . $config['dirname'].DIRECTORY_SEPARATOR.$saveFilename,
+                'url' => $config['domain'].$config['dirname'].$separator.$saveFilename,
                 'unique_id' => $uniqueId,
                 'size' => $file->getSize(),
                 'mime_type' => $file->getUploadMineType(),
@@ -46,8 +47,9 @@ class LocalAdapter extends AdapterAbstract
 
     /**
      * @desc: 方法描述
-     * @param array $options
+     *
      * @return array
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadLocalFile(array $options)

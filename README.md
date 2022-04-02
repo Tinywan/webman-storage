@@ -123,12 +123,8 @@ composer require qiniu/php-sdk
 
 ### phpstan
 
-```php
+```phpregexp
 vendor/bin/phpstan analyse src
-```
 
-### vendor/bin/php-cs-fixer fix src
-
-```php
 vendor/bin/php-cs-fixer fix src
 ```

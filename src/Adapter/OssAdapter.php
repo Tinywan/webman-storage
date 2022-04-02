@@ -49,16 +49,17 @@ class OssAdapter extends AdapterAbstract
         try {
             $config = config('plugin.tinywan.storage.app.storage.oss');
             $result = [];
+            $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('md5', $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'].DIRECTORY_SEPARATOR.$saveName;
+                $object = $config['dirname'].$separator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].DIRECTORY_SEPARATOR.$object,
+                    'url' => $config['domain'].$separator.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
@@ -79,9 +80,9 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 上传本地文件
-     * @param array $options
-     * @return array
+     *
      * @throws OssException
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadLocalFile(array $options = []): array
@@ -90,8 +91,8 @@ class OssAdapter extends AdapterAbstract
             throw new StorageException('上传文件路径 file_path 和扩展名 extension 是必须的');
         }
         $config = config('plugin.tinywan.storage.app.storage.oss');
-        $uniqueId = date('YmdHis') . uniqid();
-        $object =  $config['dirname'] . DIRECTORY_SEPARATOR . $uniqueId . '.' . $options['extension'];
+        $uniqueId = date('YmdHis').uniqid();
+        $object = $config['dirname'].DIRECTORY_SEPARATOR.$uniqueId.'.'.$options['extension'];
 
         $result = [
             'origin_name' => $options['file_path'],
@@ -106,38 +107,39 @@ class OssAdapter extends AdapterAbstract
         if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
             throw new StorageException((string) $upload);
         }
+
         return $result;
     }
 
     /**
      * @desc: 上传Base64
-     * @param array $options
-     * @return array
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadBase64(array $options): array
     {
         if (!isset($options['base64'])) {
-            $this->setError(false,'base64参数不能为空');
+            $this->setError(false, 'base64参数不能为空');
         }
         if (!isset($options['extension'])) {
-            $this->setError(false,'extension参数不能为空');
+            $this->setError(false, 'extension参数不能为空');
         }
         $base64 = explode(',', $options['base64']);
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $bucket = $config['bucket'];
-        $object =  $config['dirname'].DIRECTORY_SEPARATOR. uniqid() . '.' . $options['extension'];
+        $object = $config['dirname'].DIRECTORY_SEPARATOR.uniqid().'.'.$options['extension'];
         try {
             $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
-            if (!isset($result['info']) && $result['info']['http_code'] != 200) {
-                $this->setError(false,(string) $result);
+            if (!isset($result['info']) && 200 != $result['info']['http_code']) {
+                $this->setError(false, (string) $result);
             }
         } catch (OssException $e) {
-            $this->setError(false,$e->getMessage());
+            $this->setError(false, $e->getMessage());
         }
         $url = $config['domain'].DIRECTORY_SEPARATOR.$object;
         $img_len = strlen($base64['1']);
         $file_size = $img_len - ($img_len / 8) * 2;
-        return ['url' => $url,'file_name' => $object,'file_size' => $file_size];
+
+        return ['url' => $url, 'file_name' => $object, 'file_size' => $file_size];
     }
 }

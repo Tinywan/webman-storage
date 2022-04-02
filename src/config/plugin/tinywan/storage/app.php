@@ -20,7 +20,7 @@ return [
             'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
             'root' => runtime_path().'/storage',
             'dirname' => '/storage',
-            'domain' => 'http://127.0.0.1:8787'
+            'domain' => 'http://127.0.0.1:8787',
         ],
         // 阿里云对象存储
         'oss' => [

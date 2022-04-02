@@ -54,16 +54,17 @@ class CosAdapter extends AdapterAbstract
         try {
             $config = config('plugin.tinywan.storage.app.storage.cos');
             $result = [];
+            $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('md5', $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'].DIRECTORY_SEPARATOR.$saveName;
+                $object = $config['dirname'].$separator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].DIRECTORY_SEPARATOR.$object,
+                    'url' => $config['domain'].$separator.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
@@ -85,8 +86,9 @@ class CosAdapter extends AdapterAbstract
 
     /**
      * @desc: 方法描述
-     * @param array $options
+     *
      * @return array
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadLocalFile(array $options)
