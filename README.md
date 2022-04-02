@@ -119,6 +119,70 @@ composer require qcloud/cos-sdk-v5
 composer require qiniu/php-sdk
 ```
 
+## 上传Base64图片
+
+>**使用场景：** 前端直接截图（头像、Canvas等）一个Base64数据流的图片直接上传到云端
+
+#### 请求参数
+
+```json
+{
+    "extension": "png",
+    "base64": "data:image/jpeg;base64,/9j/4AAQSkxxxxxxxxxxxxZJRgABvtyQBIr/MPTPTP/2Q=="
+}
+```
+#### 请求案例（阿里云）
+
+```php
+public function upload(Request $request)
+{
+    $param = $request->post();
+	// 第一个参数为存储方式。第二个参数为是否本地文件（默认是）
+    Storage::config(Storage::MODE_OSS, false);
+    $r = Storage::uploadBase64($param);
+    var_dump($r);
+}
+```
+
+#### 响应参数
+```json
+{
+	"save_path": "storage/20220402213639624851671439e.png",
+	"url": "http://webman.oss.tinywan.com/storage/20220402213639624851671439e.png",
+	"unique_id": "20220402213639624851671439e",
+	"size": 11802,
+	"extension": "png"
+}
+```
+## 上传服务端文件
+
+>**使用场景：** 服务端导出文件需要上传到云端存储，或者零时下载文件存储。
+
+#### 请求案例（阿里云）
+
+```php
+Storage::config(Storage::MODE_OSS,false);
+$param = [
+    'file_path' => runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png',
+    'extension' => 'png',
+];
+$r = Storage::uploadServerFile($param);
+var_dump($r);
+```
+
+#### 响应参数
+
+```json
+{
+	"origin_name": "/var/www/webman-admin/runtime/storage/webman.png",
+	"save_path": "storage/6edf04d7c26f020cf5e46e6457620220402213414.png",
+	"url": "http://webman.oss.tinywan.com/storage/6ed9ffd54d0df57620220402213414.png",
+	"unique_id": "6edf04d7c26f020cf5e46e6403213414",
+	"size": 3505604,
+	"extension": "png"
+}
+```
+
 ## Other
 
 ### phpstan
