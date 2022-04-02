@@ -20,11 +20,11 @@ interface AdapterInterface
     public function uploadFile(array $options);
 
     /**
-     * @desc: 上传本地文件
+     * @desc: 上传服务端文件
      *
      * @return mixed
      */
-    public function uploadLocalFile(array $options);
+    public function uploadServerFile(array $options);
 
     /**
      * @desc: Base64上传文件

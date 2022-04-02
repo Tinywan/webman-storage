@@ -41,8 +41,7 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 方法描述
-     * @param array $options
-     * @return array
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadFile(array $options = []): array
@@ -51,7 +50,7 @@ class OssAdapter extends AdapterAbstract
             $config = config('plugin.tinywan.storage.app.storage.oss');
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('md5', $file->getPathname());
+                $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -80,8 +79,9 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 上传Base64
-     * @param array $options
+     *
      * @return array|bool
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadBase64(array $options)
@@ -95,7 +95,8 @@ class OssAdapter extends AdapterAbstract
         $base64 = explode(',', $options['base64']);
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $bucket = $config['bucket'];
-        $object = $config['dirname'].$this->dirSeparator. date('YmdHis').uniqid().'.'.$options['extension'];
+        $uniqueId = date('YmdHis').uniqid();
+        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$options['extension'];
         try {
             $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
             if (!isset($result['info']) && 200 != $result['info']['http_code']) {
@@ -104,39 +105,49 @@ class OssAdapter extends AdapterAbstract
         } catch (OssException $e) {
             return $this->setError(false, $e->getMessage());
         }
-        $url = $config['domain'].$this->dirSeparator.$object;
-        $img_len = strlen($base64['1']);
-        $file_size = $img_len - ($img_len / 8) * 2;
 
-        return ['url' => $url, 'file_name' => $object, 'file_size' => $file_size];
+        $imgLen = strlen($base64['1']);
+        $fileSize = $imgLen - ($imgLen / 8) * 2;
+
+        return [
+            'save_path' => $object,
+            'url' => $config['domain'].$this->dirSeparator.$object,
+            'unique_id' => $uniqueId,
+            'size' => $fileSize,
+            'extension' => $options['extension'],
+        ];
     }
 
     /**
-     * @desc: 上传本地文件
-     * @param array $options
-     * @return array
+     * @desc: 上传服务端文件
+     *
      * @throws OssException
+     *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function uploadLocalFile(array $options = []): array
+    public function uploadServerFile(array $options = []): array
     {
         if (!isset($options['file_path']) || !isset($options['extension'])) {
             throw new StorageException('上传文件路径 file_path 和扩展名 extension 是必须的');
         }
+
+        $file = new \SplFileInfo($options['file_path']);
+        if (!$file->isFile()) {
+            throw new StorageException('不是一个有效的文件');
+        }
         $config = config('plugin.tinywan.storage.app.storage.oss');
-        $uniqueId = date('YmdHis').uniqid();
+        $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$options['extension'];
 
         $result = [
-            'origin_name' => $options['file_path'],
-            'save_name' => $object,
+            'origin_name' => $file->getRealPath(),
             'save_path' => $object,
             'url' => $config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
-            'size' => 0,
-            'extension' => $options['extension']
+            'size' => $file->getSize(),
+            'extension' => $file->getExtension(),
         ];
-        $upload = self::getInstance()->uploadFile($config['bucket'], $object, $options['file_path']);
+        $upload = self::getInstance()->uploadFile($config['bucket'], $object, $file->getRealPath());
         if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
             throw new StorageException((string) $upload);
         }

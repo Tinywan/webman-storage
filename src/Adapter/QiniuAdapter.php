@@ -85,7 +85,7 @@ class QiniuAdapter extends AdapterAbstract
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function uploadLocalFile(array $options)
+    public function uploadServerFile(array $options)
     {
         throw new StorageException('暂不支持');
     }

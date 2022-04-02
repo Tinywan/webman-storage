@@ -51,7 +51,7 @@ class LocalAdapter extends AdapterAbstract
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function uploadLocalFile(array $options)
+    public function uploadServerFile(array $options)
     {
         return [];
     }

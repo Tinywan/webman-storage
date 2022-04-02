@@ -16,7 +16,7 @@ use Tinywan\Storage\Exception\StorageException;
  * @see Storage
  * @mixin Storage
  *
- * @method static uploadFile(array $config = []) 上传文件
+ * @method static uploadFile(array $config = [])   上传文件
  * @method static uploadBase64(array $config = []) 上传Base64文件
  */
 class Storage
@@ -72,7 +72,7 @@ class Storage
         }
         static::$adapter = new $config[$storage]['adapter']([
             '_storage' => $storage,
-            '_is_file_upload' => $_is_file_upload
+            '_is_file_upload' => $_is_file_upload,
         ]);
     }
 }
