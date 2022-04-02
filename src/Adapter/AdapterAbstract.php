@@ -36,27 +36,27 @@ abstract class AdapterAbstract implements AdapterInterface
     /**
      * 被允许的文件类型列表.
      */
-    protected array $includes;
+    protected $includes;
 
     /**
      * 不被允许的文件类型列表.
      */
-    protected array $excludes;
+    protected $excludes;
 
     /**
      * 单个文件的最大字节数.
      */
-    protected int $singleLimit;
+    protected $singleLimit;
 
     /**
      * 多个文件的最大数量.
      */
-    protected int $totalLimit;
+    protected $totalLimit;
 
     /**
      * 文件上传的最大数量.
      */
-    protected int $nums;
+    protected $nums;
 
     /**
      * AdapterAbstract constructor.
@@ -127,8 +127,6 @@ abstract class AdapterAbstract implements AdapterInterface
      * @desc: 允许上传文件
      *
      * @author Tinywan(ShaoBo Wan)
-     *
-     * @throws UploadFileException
      */
     protected function allowedFile(): bool
     {
@@ -156,7 +154,6 @@ abstract class AdapterAbstract implements AdapterInterface
      *
      * @author Tinywan(ShaoBo Wan)
      *
-     * @throws UploadFileException
      */
     protected function allowedFileSize()
     {

@@ -5,7 +5,6 @@
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 20:03
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage;
@@ -15,9 +14,9 @@ use Tinywan\Storage\Exception\StorageException;
 /**
  * @see Storage
  * @mixin Storage
- *
  * @method static uploadFile(array $config = [])   上传文件
  * @method static uploadBase64(array $config = []) 上传Base64文件
+ * @method static uploadServerFile(array $config = []) 上传服务端文件
  */
 class Storage
 {

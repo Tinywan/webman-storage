@@ -1,12 +1,9 @@
 <?php
-
 /**
  * @desc 本地适配器
- *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 19:54
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;

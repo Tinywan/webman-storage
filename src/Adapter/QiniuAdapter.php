@@ -1,12 +1,9 @@
 <?php
-
 /**
- * @desc 阿里云OSS适配器
- *
+ * @desc 七牛云OSS适配器
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 19:54
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;
@@ -32,6 +29,9 @@ class QiniuAdapter extends AdapterAbstract
         return static::$instance;
     }
 
+    /**
+     * @return string
+     */
     public static function getUploadToken(): string
     {
         $config = config('plugin.tinywan.storage.app.storage.qiniu');

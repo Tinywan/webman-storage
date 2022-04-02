@@ -5,7 +5,6 @@
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/9 10:07
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;

@@ -1,13 +1,10 @@
 <?php
-
 /**
  * @desc 腾讯云对象存储适配器
  * @help https://cloud.tencent.com/document/product/436
- *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/13 19:54
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;

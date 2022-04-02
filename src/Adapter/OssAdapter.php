@@ -1,12 +1,9 @@
 <?php
-
 /**
  * @desc 阿里云OSS适配器
- *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 19:54
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;
@@ -18,7 +15,7 @@ use Tinywan\Storage\Exception\StorageException;
 
 class OssAdapter extends AdapterAbstract
 {
-    protected static ?OssClient $instance = null;
+    protected static $instance = null;
 
     /**
      * @desc: 阿里雲实例
@@ -41,7 +38,8 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 方法描述
-     *
+     * @param array $options
+     * @return array
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadFile(array $options = []): array
@@ -105,7 +103,6 @@ class OssAdapter extends AdapterAbstract
         } catch (OssException $e) {
             return $this->setError(false, $e->getMessage());
         }
-
         $imgLen = strlen($base64['1']);
         $fileSize = $imgLen - ($imgLen / 8) * 2;
 
@@ -120,9 +117,9 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 上传服务端文件
-     *
+     * @param array $options
+     * @return array
      * @throws OssException
-     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadServerFile(array $options = []): array
