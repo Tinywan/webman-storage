@@ -41,7 +41,8 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 方法描述
-     *
+     * @param array $options
+     * @return array
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadFile(array $options = []): array
@@ -49,17 +50,16 @@ class OssAdapter extends AdapterAbstract
         try {
             $config = config('plugin.tinywan.storage.app.storage.oss');
             $result = [];
-            $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('md5', $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'].$separator.$saveName;
+                $object = $config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].$separator.$object,
+                    'url' => $config['domain'].$this->dirSeparator.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
@@ -80,7 +80,8 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 上传Base64
-     *
+     * @param array $options
+     * @return array|bool
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadBase64(array $options)
@@ -94,7 +95,7 @@ class OssAdapter extends AdapterAbstract
         $base64 = explode(',', $options['base64']);
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $bucket = $config['bucket'];
-        $object = $config['dirname'].DIRECTORY_SEPARATOR.uniqid().'.'.$options['extension'];
+        $object = $config['dirname'].$this->dirSeparator. date('YmdHis').uniqid().'.'.$options['extension'];
         try {
             $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
             if (!isset($result['info']) && 200 != $result['info']['http_code']) {
@@ -103,7 +104,7 @@ class OssAdapter extends AdapterAbstract
         } catch (OssException $e) {
             return $this->setError(false, $e->getMessage());
         }
-        $url = $config['domain'].DIRECTORY_SEPARATOR.$object;
+        $url = $config['domain'].$this->dirSeparator.$object;
         $img_len = strlen($base64['1']);
         $file_size = $img_len - ($img_len / 8) * 2;
 
@@ -112,9 +113,9 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 上传本地文件
-     *
+     * @param array $options
+     * @return array
      * @throws OssException
-     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadLocalFile(array $options = []): array
@@ -122,19 +123,18 @@ class OssAdapter extends AdapterAbstract
         if (!isset($options['file_path']) || !isset($options['extension'])) {
             throw new StorageException('上传文件路径 file_path 和扩展名 extension 是必须的');
         }
-        $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $uniqueId = date('YmdHis').uniqid();
-        $object = $config['dirname'].$separator.$uniqueId.'.'.$options['extension'];
+        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$options['extension'];
 
         $result = [
             'origin_name' => $options['file_path'],
             'save_name' => $object,
             'save_path' => $object,
-            'url' => $config['domain'].$separator.$object,
+            'url' => $config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => 0,
-            'extension' => $options['extension'],
+            'extension' => $options['extension']
         ];
         $upload = self::getInstance()->uploadFile($config['bucket'], $object, $options['file_path']);
         if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {

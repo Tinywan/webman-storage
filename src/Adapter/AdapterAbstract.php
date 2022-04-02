@@ -19,6 +19,16 @@ abstract class AdapterAbstract implements AdapterInterface
     use ErrorMsg;
 
     /**
+     * @var bool
+     */
+    public $_isFileUpload;
+
+    /**
+     * @var string
+     */
+    public $dirSeparator = DIRECTORY_SEPARATOR;
+
+    /**
      * 文件存储对象
      */
     protected $files;
@@ -55,14 +65,18 @@ abstract class AdapterAbstract implements AdapterInterface
      */
     public function __construct(array $config = [])
     {
-        $this->files = request()->file();
-        $this->includes = [];
-        $this->excludes = [];
-        $this->singleLimit = 0;
-        $this->totalLimit = 0;
-        $this->nums = 0;
-        $this->loadConfig($config);
-        $this->verify();
+        $this->dirSeparator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
+        $this->_isFileUpload = $config['_is_file_upload'] ?? true;
+        if ($this->_isFileUpload) {
+            $this->files = request()->file();
+            $this->includes = [];
+            $this->excludes = [];
+            $this->singleLimit = 0;
+            $this->totalLimit = 0;
+            $this->nums = 0;
+            $this->loadConfig($config);
+            $this->verify();
+        }
     }
 
     /**

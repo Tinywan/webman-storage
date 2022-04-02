@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage;
 
-use support\Container;
 use Tinywan\Storage\Exception\StorageException;
 
 /**
@@ -64,12 +63,15 @@ class Storage
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function config(string $storage = self::MODE_LOCAL)
+    public static function config(string $storage = self::MODE_LOCAL, bool $_is_file_upload = true)
     {
         $config = config('plugin.tinywan.storage.app.storage');
         if (!isset($config[$storage]) || empty($config[$storage]['adapter'])) {
             throw new StorageException('对应的adapter不存在');
         }
-        static::$adapter = Container::make($config[$storage]['adapter'], []);
+        static::$adapter = new $config[$storage]['adapter']([
+            '_storage' => $storage,
+            '_is_file_upload' => $_is_file_upload
+        ]);
     }
 }

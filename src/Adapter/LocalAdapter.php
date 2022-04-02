@@ -22,17 +22,16 @@ class LocalAdapter extends AdapterAbstract
     {
         $result = [];
         $config = config('plugin.tinywan.storage.app.storage.local');
-        $separator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file('md5', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
-            $savePath = $config['root'].$separator.$saveFilename;
+            $savePath = $config['root'].$this->dirSeparator.$saveFilename;
             $temp = [
                 'key' => $key,
                 'origin_name' => $file->getUploadName(),
                 'save_name' => $saveFilename,
                 'save_path' => $savePath,
-                'url' => $config['domain'].$config['dirname'].$separator.$saveFilename,
+                'url' => $config['domain'].$config['dirname'].$this->dirSeparator.$saveFilename,
                 'unique_id' => $uniqueId,
                 'size' => $file->getSize(),
                 'mime_type' => $file->getUploadMineType(),
