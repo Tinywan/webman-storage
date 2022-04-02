@@ -79,6 +79,38 @@ class OssAdapter extends AdapterAbstract
     }
 
     /**
+     * @desc: 上传Base64
+     *
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public function uploadBase64(array $options)
+    {
+        if (!isset($options['base64'])) {
+            return $this->setError(false, 'base64参数不能为空');
+        }
+        if (!isset($options['extension'])) {
+            return $this->setError(false, 'extension参数不能为空');
+        }
+        $base64 = explode(',', $options['base64']);
+        $config = config('plugin.tinywan.storage.app.storage.oss');
+        $bucket = $config['bucket'];
+        $object = $config['dirname'].DIRECTORY_SEPARATOR.uniqid().'.'.$options['extension'];
+        try {
+            $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
+            if (!isset($result['info']) && 200 != $result['info']['http_code']) {
+                return $this->setError(false, (string) $result);
+            }
+        } catch (OssException $e) {
+            return $this->setError(false, $e->getMessage());
+        }
+        $url = $config['domain'].DIRECTORY_SEPARATOR.$object;
+        $img_len = strlen($base64['1']);
+        $file_size = $img_len - ($img_len / 8) * 2;
+
+        return ['url' => $url, 'file_name' => $object, 'file_size' => $file_size];
+    }
+
+    /**
      * @desc: 上传本地文件
      *
      * @throws OssException
@@ -110,37 +142,5 @@ class OssAdapter extends AdapterAbstract
         }
 
         return $result;
-    }
-
-    /**
-     * @desc: 上传Base64
-     *
-     * @author Tinywan(ShaoBo Wan)
-     */
-    public function uploadBase64(array $options): array
-    {
-        if (!isset($options['base64'])) {
-            $this->setError(false, 'base64参数不能为空');
-        }
-        if (!isset($options['extension'])) {
-            $this->setError(false, 'extension参数不能为空');
-        }
-        $base64 = explode(',', $options['base64']);
-        $config = config('plugin.tinywan.storage.app.storage.oss');
-        $bucket = $config['bucket'];
-        $object = $config['dirname'].DIRECTORY_SEPARATOR.uniqid().'.'.$options['extension'];
-        try {
-            $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
-            if (!isset($result['info']) && 200 != $result['info']['http_code']) {
-                $this->setError(false, (string) $result);
-            }
-        } catch (OssException $e) {
-            $this->setError(false, $e->getMessage());
-        }
-        $url = $config['domain'].DIRECTORY_SEPARATOR.$object;
-        $img_len = strlen($base64['1']);
-        $file_size = $img_len - ($img_len / 8) * 2;
-
-        return ['url' => $url, 'file_name' => $object, 'file_size' => $file_size];
     }
 }
