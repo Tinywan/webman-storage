@@ -80,15 +80,15 @@ abstract class AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @return array|bool|void
+     * @return array|bool
      */
-    public function uploadBase64(array $options)
+    public function uploadBase64(string $base64, string $extension = 'png')
     {
         return $this->setError(false, '暂不支持');
     }
 
     /**
-     * @return array|bool|void
+     * @return array|bool
      */
     public function uploadServerFile(string $file_path)
     {

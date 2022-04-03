@@ -10,18 +10,21 @@
 
 ## 特性
 
-目前支持以下多文件上传
+#### 🍏 本地对象存储
+- ✅ 本地多文件上传`（已支持）`
 
-- `local：本地对象存储`
-    - 上传本地多文件`（默认支持）`
-- `oss：阿里云对象存储`
-    - 上传本地多文件`（默认支持）`
-    - 上传本地 `Base64`图片文件`（已支持）`
-    - 上传服务端文件`（已支持）`
-- `cos：腾讯云对象存储`
-    - 上传本地多文件`（默认支持）`
-- `qiniu：七牛云对象存储`
-    - 上传本地多文件`（默认支持）`
+#### 🍓 阿里云对象存储
+- ✅ 本地多文件上传
+- ✅ `Base64`图片文件上传
+- ✅ 上传服务端文件
+
+#### 🍋 腾讯云对象存储
+- ✅ 本地多文件上传
+- ✅ `Base64`图片文件上传
+- ✅ 上传服务端文件
+
+#### 🍇 七牛云对象存储
+- ✅ 本地多文件上传
 
 ## 安装
 
@@ -34,7 +37,7 @@ composer require tinywan/storage
 ```php
 use Tinywan\Storage\Storage;
 
-Storage::config(); // 初始化，默认为本地存储：local
+Storage::config(); // 初始化。 默认为本地存储：local，阿里云：oss，腾讯云：cos，七牛：qiniu
 $res = Storage::uploadFile();
 var_dump(json_encode($res));
 ```
@@ -137,9 +140,9 @@ composer require qiniu/php-sdk
 ```php
 public function upload(Request $request)
 {
-    $param = $request->post();
     Storage::config(Storage::MODE_OSS, false); // 第一个参数为存储方式。第二个参数为是否本地文件（默认是）
-    $r = Storage::uploadBase64($param);
+    $base64 = $request->post('base64');
+    $r = Storage::uploadBase64($base64,'png');
     var_dump($r);
 }
 ```
@@ -162,8 +165,8 @@ public function upload(Request $request)
 
 ```php
 Storage::config(Storage::MODE_OSS,false);
-$r = Storage::uploadServerFile(runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png');
-var_dump($r);
+$localFile = runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png';
+$res = Storage::uploadServerFile($localFile);
 ```
 
 #### 响应参数

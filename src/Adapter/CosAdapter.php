@@ -92,7 +92,8 @@ class CosAdapter extends AdapterAbstract
         if (!$file->isFile()) {
             throw new StorageException('不是一个有效的文件');
         }
-        $config = config('plugin.tinywan.storage.app.storage.oss');
+
+        $config = config('plugin.tinywan.storage.app.storage.cos');
         $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
@@ -112,5 +113,37 @@ class CosAdapter extends AdapterAbstract
         ]);
 
         return $result;
+    }
+
+    /**
+     * @desc: 上传Base64
+     *
+     * @return array|bool
+     *
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public function uploadBase64(string $base64, string $extension = 'png')
+    {
+        $base64 = explode(',', $base64);
+        $config = config('plugin.tinywan.storage.app.storage.cos');
+        $uniqueId = date('YmdHis').uniqid();
+        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
+
+        self::getInstance()->putObject([
+            'Bucket' => $config['bucket'],
+            'Key' => $object,
+            'Body' => base64_decode($base64[1]),
+        ]);
+
+        $imgLen = strlen($base64['1']);
+        $fileSize = $imgLen - ($imgLen / 8) * 2;
+
+        return [
+            'save_path' => $object,
+            'url' => $config['domain'].$this->dirSeparator.$object,
+            'unique_id' => $uniqueId,
+            'size' => $fileSize,
+            'extension' => $extension,
+        ];
     }
 }

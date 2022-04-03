@@ -82,19 +82,13 @@ class OssAdapter extends AdapterAbstract
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function uploadBase64(array $options)
+    public function uploadBase64(string $base64, string $extension = 'png')
     {
-        if (!isset($options['base64'])) {
-            return $this->setError(false, 'base64参数不能为空');
-        }
-        if (!isset($options['extension'])) {
-            return $this->setError(false, 'extension参数不能为空');
-        }
-        $base64 = explode(',', $options['base64']);
+        $base64 = explode(',', $base64);
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $bucket = $config['bucket'];
         $uniqueId = date('YmdHis').uniqid();
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$options['extension'];
+        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
         try {
             $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
@@ -112,7 +106,7 @@ class OssAdapter extends AdapterAbstract
             'url' => $config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $fileSize,
-            'extension' => $options['extension'],
+            'extension' => $extension,
         ];
     }
 

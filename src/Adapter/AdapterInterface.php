@@ -30,5 +30,5 @@ interface AdapterInterface
      *
      * @return mixed
      */
-    public function uploadBase64(array $options);
+    public function uploadBase64(string $base64, string $extension = 'png');
 }
