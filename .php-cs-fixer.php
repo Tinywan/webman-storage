@@ -28,5 +28,14 @@ return (new PhpCsFixer\Config())
         'line_ending' => true,
         'single_quote' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'array_indentation'                 => true,  //数组的每个元素必须缩进一次
+        'ternary_operator_spaces'               => true,  //标准化三元运算的格式
+        'whitespace_after_comma_in_array'       => true, // 在数组声明中，每个逗号后必须有一个空格
+        'unary_operator_spaces' => true,
+        'binary_operator_spaces' => true,
+        'blank_line_before_statement' => [
+            'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try'],
+        ],
+        'phpdoc_single_line_var_spacing' => true,
     ])
     ->setFinder($finder);

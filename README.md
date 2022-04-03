@@ -33,17 +33,10 @@ composer require tinywan/storage
 
 ```php
 use Tinywan\Storage\Storage;
-use Tinywan\Storage\Exception\StorageException;
 
-try {
-    // 初始化
-    Storage::config(); // 默认为本地存储：local
-    // 上传
-    $res = Storage::uploadFile();
-    var_dump(json_encode($res));
-}catch (StorageException $exception) {
-    var_dump($exception->getMessage());
-}
+Storage::config(); // 初始化，默认为本地存储：local
+$res = Storage::uploadFile();
+var_dump(json_encode($res));
 ```
 
 ### 上传成功信息
@@ -169,11 +162,7 @@ public function upload(Request $request)
 
 ```php
 Storage::config(Storage::MODE_OSS,false);
-$param = [
-    'file_path' => runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png',
-    'extension' => 'png',
-];
-$r = Storage::uploadServerFile($param);
+$r = Storage::uploadServerFile(runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png');
 var_dump($r);
 ```
 

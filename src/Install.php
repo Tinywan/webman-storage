@@ -10,7 +10,7 @@ class Install
      * @var array
      */
     protected static $pathRelation = [
-    'config/plugin/tinywan/storage' => 'config/plugin/tinywan/storage',
+        'config/plugin/tinywan/storage' => 'config/plugin/tinywan/storage',
     ];
 
     /**

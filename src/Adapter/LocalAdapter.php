@@ -1,6 +1,7 @@
 <?php
 /**
  * @desc 本地适配器
+ *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 19:54
  */
@@ -39,22 +40,5 @@ class LocalAdapter extends AdapterAbstract
         }
 
         return $result;
-    }
-
-    /**
-     * @desc: 方法描述
-     *
-     * @return array
-     *
-     * @author Tinywan(ShaoBo Wan)
-     */
-    public function uploadServerFile(array $options)
-    {
-        return [];
-    }
-
-    public function uploadBase64(array $options)
-    {
-        return [];
     }
 }

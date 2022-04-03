@@ -1,6 +1,7 @@
 <?php
 /**
  * @desc 阿里云OSS适配器
+ *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 19:54
  */
@@ -38,8 +39,7 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 方法描述
-     * @param array $options
-     * @return array
+     *
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadFile(array $options = []): array
@@ -95,6 +95,7 @@ class OssAdapter extends AdapterAbstract
         $bucket = $config['bucket'];
         $uniqueId = date('YmdHis').uniqid();
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$options['extension'];
+
         try {
             $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
             if (!isset($result['info']) && 200 != $result['info']['http_code']) {
@@ -117,24 +118,20 @@ class OssAdapter extends AdapterAbstract
 
     /**
      * @desc: 上传服务端文件
-     * @param array $options
-     * @return array
+     *
      * @throws OssException
+     *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function uploadServerFile(array $options = []): array
+    public function uploadServerFile(string $file_path): array
     {
-        if (!isset($options['file_path']) || !isset($options['extension'])) {
-            throw new StorageException('上传文件路径 file_path 和扩展名 extension 是必须的');
-        }
-
-        $file = new \SplFileInfo($options['file_path']);
+        $file = new \SplFileInfo($file_path);
         if (!$file->isFile()) {
             throw new StorageException('不是一个有效的文件');
         }
         $config = config('plugin.tinywan.storage.app.storage.oss');
         $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$options['extension'];
+        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),

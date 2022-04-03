@@ -2,6 +2,7 @@
 /**
  * @desc 腾讯云对象存储适配器
  * @help https://cloud.tencent.com/document/product/436
+ *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/13 19:54
  */
@@ -52,7 +53,7 @@ class CosAdapter extends AdapterAbstract
             $config = config('plugin.tinywan.storage.app.storage.cos');
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('md5', $file->getPathname());
+                $uniqueId = hash_file('md5', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -81,19 +82,35 @@ class CosAdapter extends AdapterAbstract
     }
 
     /**
-     * @desc: 方法描述
-     *
-     * @return array
+     * @desc: 上传服务端文件
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public function uploadServerFile(array $options)
+    public function uploadServerFile(string $file_path): array
     {
-        throw new StorageException('暂不支持');
-    }
+        $file = new \SplFileInfo($file_path);
+        if (!$file->isFile()) {
+            throw new StorageException('不是一个有效的文件');
+        }
+        $config = config('plugin.tinywan.storage.app.storage.oss');
+        $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
+        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
-    public function uploadBase64(array $options)
-    {
-        throw new StorageException('暂不支持');
+        $result = [
+            'origin_name' => $file->getRealPath(),
+            'save_path' => $object,
+            'url' => $config['domain'].$this->dirSeparator.$object,
+            'unique_id' => $uniqueId,
+            'size' => $file->getSize(),
+            'extension' => $file->getExtension(),
+        ];
+
+        self::getInstance()->putObject([
+            'Bucket' => $config['bucket'],
+            'Key' => $object,
+            'Body' => fopen($file->getPathname(), 'rb'),
+        ]);
+
+        return $result;
     }
 }

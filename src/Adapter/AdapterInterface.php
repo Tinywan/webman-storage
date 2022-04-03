@@ -23,7 +23,7 @@ interface AdapterInterface
      *
      * @return mixed
      */
-    public function uploadServerFile(array $options);
+    public function uploadServerFile(string $file_path);
 
     /**
      * @desc: Base64上传文件

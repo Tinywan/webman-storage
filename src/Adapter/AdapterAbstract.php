@@ -80,6 +80,22 @@ abstract class AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * @return array|bool|void
+     */
+    public function uploadBase64(array $options)
+    {
+        return $this->setError(false, '暂不支持');
+    }
+
+    /**
+     * @return array|bool|void
+     */
+    public function uploadServerFile(string $file_path)
+    {
+        return $this->setError(false, '暂不支持');
+    }
+
+    /**
      * @desc: 加载配置文件
      *
      * @author Tinywan(ShaoBo Wan)
@@ -153,7 +169,6 @@ abstract class AdapterAbstract implements AdapterInterface
      * @desc: 允许上传文件大小
      *
      * @author Tinywan(ShaoBo Wan)
-     *
      */
     protected function allowedFileSize()
     {
