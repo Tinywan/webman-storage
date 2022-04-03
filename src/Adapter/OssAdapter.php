@@ -48,7 +48,7 @@ class OssAdapter extends AdapterAbstract
             $config = config('plugin.tinywan.storage.app.storage.oss');
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
+                $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -124,7 +124,7 @@ class OssAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
         $config = config('plugin.tinywan.storage.app.storage.oss');
-        $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
+        $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [

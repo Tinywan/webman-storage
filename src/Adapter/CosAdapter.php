@@ -53,7 +53,7 @@ class CosAdapter extends AdapterAbstract
             $config = config('plugin.tinywan.storage.app.storage.cos');
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('md5', $file->getPathname()).date('YmdHis');
+                $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -94,7 +94,7 @@ class CosAdapter extends AdapterAbstract
         }
 
         $config = config('plugin.tinywan.storage.app.storage.cos');
-        $uniqueId = hash_file('sha256', $file->getPathname()).date('YmdHis');
+        $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [

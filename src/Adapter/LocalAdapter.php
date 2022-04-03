@@ -21,7 +21,7 @@ class LocalAdapter extends AdapterAbstract
         $result = [];
         $config = config('plugin.tinywan.storage.app.storage.local');
         foreach ($this->files as $key => $file) {
-            $uniqueId = hash_file('md5', $file->getPathname());
+            $uniqueId = hash_file('sha1', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
             $savePath = $config['root'].$this->dirSeparator.$saveFilename;
             $temp = [
