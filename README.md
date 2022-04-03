@@ -37,10 +37,8 @@ composer require tinywan/storage
 ## 基本用法
 
 ```php
-use Tinywan\Storage\Storage;
-
-Storage::config(); // 初始化。 默认为本地存储：local，阿里云：oss，腾讯云：cos，七牛：qiniu
-$res = Storage::uploadFile();
+Tinywan\Storage\Storage::config(); // 初始化。 默认为本地存储：local，阿里云：oss，腾讯云：cos，七牛：qiniu
+$res = Tinywan\Storage\Storage::uploadFile();
 var_dump(json_encode($res));
 ```
 
