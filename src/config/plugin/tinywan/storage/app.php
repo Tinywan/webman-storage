@@ -19,8 +19,11 @@ return [
         'local' => [
             'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
             'root' => runtime_path().'/storage',
-            'dirname' => '/storage',
+            'dirname' => function(){
+                return date('Y-m');
+            },
             'domain' => 'http://127.0.0.1:8787',
+            'uri'=> '/runtime', // 如果 domain + uri 不在 public 目录下，请做好软链接，否则生成的url无法访问
         ],
         // 阿里云对象存储
         'oss' => [

@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage\Adapter;
 
+use Tinywan\Storage\Exception\StorageException;
+
 class LocalAdapter extends AdapterAbstract
 {
     /**
@@ -20,19 +22,26 @@ class LocalAdapter extends AdapterAbstract
     {
         $result = [];
         $config = config('plugin.tinywan.storage.app.storage.local');
-        if (is_callable($config['root'])) {
-            $config['root'] = (string) $config['root']();
+        $dirname = $config['dirname'];
+        if (is_callable($dirname)) {
+            $dirname = (string) $dirname() ?: '';
         }
+        $dirname = DIRECTORY_SEPARATOR.ltrim($dirname, DIRECTORY_SEPARATOR); // 避免没有加前置 “/”
+        $basePath = $config['root'].$dirname.DIRECTORY_SEPARATOR;
+        if (!$this->createDir($basePath)) {
+            throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
+        }
+        $baseUrl = $config['domain'].$config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $dirname).'/';
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file('sha1', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
-            $savePath = $config['root'].$this->dirSeparator.$saveFilename;
+            $savePath = $basePath.$saveFilename;
             $temp = [
                 'key' => $key,
                 'origin_name' => $file->getUploadName(),
                 'save_name' => $saveFilename,
                 'save_path' => $savePath,
-                'url' => $config['domain'].$config['dirname'].$this->dirSeparator.$saveFilename,
+                'url' => $baseUrl.$saveFilename,
                 'unique_id' => $uniqueId,
                 'size' => $file->getSize(),
                 'mime_type' => $file->getUploadMineType(),
@@ -43,5 +52,26 @@ class LocalAdapter extends AdapterAbstract
         }
 
         return $result;
+    }
+
+
+    protected function createDir(string $path): bool
+    {
+        // 判断传过来的$path是否已是目录，若是，则直接返回true
+        if (is_dir($path)) {
+            return true;
+        }
+
+        // 走到这步，说明传过来的$path不是目录
+        // 判断其上级是否为目录，是，则直接创建$path目录
+        if (is_dir(dirname($path))) {
+            return mkdir($path);
+        }
+
+        // 走到这说明其上级目录也不是目录,则继续判断其上上...级目录
+        $this->createDir(dirname($path));
+
+        // 走到这步，说明上级目录已创建成功，则直接接着创建当前目录，并把创建的结果返回
+        return mkdir($path);
     }
 }
