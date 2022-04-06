@@ -26,7 +26,9 @@ class LocalAdapter extends AdapterAbstract
         if (is_callable($dirname)) {
             $dirname = (string) $dirname() ?: '';
         }
-        $dirname = $dirname ?: DIRECTORY_SEPARATOR.ltrim($dirname, DIRECTORY_SEPARATOR); // 避免没有加前置 “/”
+        if (!empty($dirname)){
+            $dirname = DIRECTORY_SEPARATOR.ltrim($dirname, DIRECTORY_SEPARATOR); // 避免没有加前置 “/”
+        }
         $basePath = $config['root'].$dirname.DIRECTORY_SEPARATOR;
         if (!$this->createDir($basePath)) {
             throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
