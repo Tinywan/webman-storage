@@ -64,9 +64,10 @@ class Storage
      *
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function config(string $storage = self::MODE_LOCAL, bool $_is_file_upload = true)
+    public static function config(string $storage = null, bool $_is_file_upload = true)
     {
         $config = config('plugin.tinywan.storage.app.storage');
+        $storage = $storage ?: $config['default'];
         if (!isset($config[$storage]) || empty($config[$storage]['adapter'])) {
             throw new StorageException('对应的adapter不存在');
         }
