@@ -65,13 +65,15 @@ class LocalAdapter extends AdapterAbstract
         }
 
         // 走到这步，说明传过来的$path不是目录
-        // 判断其上级是否为目录，是，则直接创建$path目录
-        if (is_dir(dirname($path))) {
-            return mkdir($path);
+        // 判断其上级是否为目录，否，则创建上级目录
+        $parent = dirname($path);
+        if (!is_dir($parent)) {
+            // 创建上级目录
+            if (!$this->createDir($parent)) {
+                // 创建失败，返回 false
+                return false;
+            }
         }
-
-        // 走到这说明其上级目录也不是目录,则继续判断其上上...级目录
-        $this->createDir(dirname($path));
 
         // 走到这步，说明上级目录已创建成功，则直接接着创建当前目录，并把创建的结果返回
         return mkdir($path);
