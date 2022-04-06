@@ -19,6 +19,7 @@ return [
         'local' => [
             'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
             'root' => runtime_path().'/storage',
+            // 'dirname' => 'subdir',
             'dirname' => function(){
                 return date('Y-m');
             },
