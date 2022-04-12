@@ -21,7 +21,7 @@ class LocalAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         $result = [];
-        $config = config('plugin.tinywan.storage.app.storage.local');
+        $config = $this->config;
         $dirname = $config['dirname'];
         if (is_callable($dirname)) {
             $dirname = (string) $dirname() ?: '';

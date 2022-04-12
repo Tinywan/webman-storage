@@ -59,6 +59,12 @@ abstract class AdapterAbstract implements AdapterInterface
     protected $nums;
 
     /**
+     * 设置
+     * @var array
+     */
+    protected $config;
+
+    /**
      * AdapterAbstract constructor.
      *
      * @author Tinywan(ShaoBo Wan)
@@ -108,6 +114,7 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->singleLimit = $config['single_limit'] ?? $defaultConfig['single_limit'];
         $this->totalLimit = $config['total_limit'] ?? $defaultConfig['total_limit'];
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
+        $this->config = $config;
     }
 
     /**

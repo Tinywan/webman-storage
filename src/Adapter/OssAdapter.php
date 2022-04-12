@@ -16,25 +16,25 @@ use Tinywan\Storage\Exception\StorageException;
 
 class OssAdapter extends AdapterAbstract
 {
-    protected static $instance = null;
+    protected $instance = null;
 
     /**
      * @desc: 阿里雲实例
      *
      * @throws OssException
      */
-    public static function getInstance(): ?OssClient
+    public function getInstance(): ?OssClient
     {
-        if (is_null(self::$instance)) {
-            $config = config('plugin.tinywan.storage.app.storage.oss');
-            static::$instance = new OssClient(
+        if (is_null($this->instance)) {
+            $config = $this->config;
+            $this->instance = new OssClient(
                 $config['accessKeyId'],
                 $config['accessKeySecret'],
                 $config['endpoint']
             );
         }
 
-        return static::$instance;
+        return $this->instance;
     }
 
     /**
@@ -45,7 +45,7 @@ class OssAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         try {
-            $config = config('plugin.tinywan.storage.app.storage.oss');
+            $config = $this->config;
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
@@ -62,7 +62,7 @@ class OssAdapter extends AdapterAbstract
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                $upload = self::getInstance()->uploadFile($config['bucket'], $object, $file->getPathname());
+                $upload = $this->getInstance()->uploadFile($config['bucket'], $object, $file->getPathname());
                 if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
                     throw new StorageException((string) $upload);
                 }
@@ -85,13 +85,13 @@ class OssAdapter extends AdapterAbstract
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $config = config('plugin.tinywan.storage.app.storage.oss');
+        $config = $this->config;
         $bucket = $config['bucket'];
         $uniqueId = date('YmdHis').uniqid();
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
         try {
-            $result = self::getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
+            $result = $this->getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
             if (!isset($result['info']) && 200 != $result['info']['http_code']) {
                 return $this->setError(false, (string) $result);
             }
@@ -123,7 +123,7 @@ class OssAdapter extends AdapterAbstract
         if (!$file->isFile()) {
             throw new StorageException('不是一个有效的文件');
         }
-        $config = config('plugin.tinywan.storage.app.storage.oss');
+        $config = $this->config;
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
@@ -135,7 +135,7 @@ class OssAdapter extends AdapterAbstract
             'size' => $file->getSize(),
             'extension' => $file->getExtension(),
         ];
-        $upload = self::getInstance()->uploadFile($config['bucket'], $object, $file->getRealPath());
+        $upload = $this->getInstance()->uploadFile($config['bucket'], $object, $file->getRealPath());
         if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
             throw new StorageException((string) $upload);
         }
