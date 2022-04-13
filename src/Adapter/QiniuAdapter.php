@@ -16,26 +16,32 @@ use Tinywan\Storage\Exception\StorageException;
 
 class QiniuAdapter extends AdapterAbstract
 {
-    protected static $instance = null;
+    protected $instance = null;
+
+    protected $uploadToken;
 
     /**
      * @desc: 实例
      */
-    public static function getInstance(): ?UploadManager
+    public function getInstance(): ?UploadManager
     {
-        if (is_null(self::$instance)) {
-            static::$instance = new UploadManager();
+        if (is_null($this->instance)) {
+            $this->instance = new UploadManager();
         }
 
-        return static::$instance;
+        return $this->instance;
     }
 
-    public static function getUploadToken(): string
+    public function getUploadToken(): string
     {
-        $config = config('plugin.tinywan.storage.app.storage.qiniu');
-        $auth = new Auth($config['accessKey'], $config['secretKey']);
+        if ($this->uploadToken) {
+            $config = $this->config;
+            $auth = new Auth($config['accessKey'], $config['secretKey']);
 
-        return $auth->uploadToken($config['bucket']);
+            $this->uploadToken = $auth->uploadToken($config['bucket']);
+        }
+
+        return $this->uploadToken;
     }
 
     /**
@@ -46,7 +52,7 @@ class QiniuAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         try {
-            $config = config('plugin.tinywan.storage.app.storage.qiniu');
+            $config = $this->config;
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname());
@@ -63,7 +69,7 @@ class QiniuAdapter extends AdapterAbstract
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                list($ret, $err) = self::getInstance()->putFile(self::getUploadToken(), $object, $file->getPathname());
+                list($ret, $err) = $this->getInstance()->putFile($this->getUploadToken(), $object, $file->getPathname());
                 if (!empty($err)) {
                     throw new StorageException((string) $err);
                 }
@@ -88,7 +94,7 @@ class QiniuAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $config = config('plugin.tinywan.storage.app.storage.qiniu');
+        $config = $this->config;
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
@@ -101,7 +107,7 @@ class QiniuAdapter extends AdapterAbstract
             'extension' => $file->getExtension()
         ];
 
-        list($ret, $err) = self::getInstance()->putFile(self::getUploadToken(), $object, $file->getPathname());
+        list($ret, $err) = $this->getInstance()->putFile($this->getUploadToken(), $object, $file->getPathname());
         if (!empty($err)) {
             throw new StorageException((string) $err);
         }
@@ -110,19 +116,19 @@ class QiniuAdapter extends AdapterAbstract
 
     /**
      * 上传Base64
-     * @param string $base64
-     * @param string $extension
+     * @param  string  $base64
+     * @param  string  $extension
      * @return array
      * @throws \Exception
      */
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $config = config('plugin.tinywan.storage.app.storage.qiniu');
+        $config = $this->config;
         $uniqueId = date('YmdHis').uniqid();
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
-        list($ret, $err) = self::getInstance()->put(self::getUploadToken(), $object, base64_decode($base64[1]));
+        list($ret, $err) = $this->getInstance()->put($this->getUploadToken(), $object, base64_decode($base64[1]));
         if (!empty($err)) {
             throw new StorageException((string) $err);
         }

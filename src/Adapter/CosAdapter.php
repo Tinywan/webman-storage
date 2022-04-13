@@ -20,16 +20,16 @@ class CosAdapter extends AdapterAbstract
     /**
      * @var null
      */
-    protected static $instance = null;
+    protected $instance = null;
 
     /**
      * @desc: 对象存储实例
      */
-    public static function getInstance(): ?Client
+    public function getInstance(): ?Client
     {
-        if (is_null(self::$instance)) {
-            $config = config('plugin.tinywan.storage.app.storage.cos');
-            static::$instance = new Client([
+        if (is_null($this->instance)) {
+            $config = $this->config;
+            $this->instance = new Client([
                 'region' => $config['region'],
                 'schema' => 'https',
                 'credentials' => [
@@ -39,7 +39,7 @@ class CosAdapter extends AdapterAbstract
             ]);
         }
 
-        return static::$instance;
+        return $this->instance;
     }
 
     /**
@@ -50,7 +50,7 @@ class CosAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         try {
-            $config = config('plugin.tinywan.storage.app.storage.cos');
+            $config = $this->config;
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
@@ -67,7 +67,7 @@ class CosAdapter extends AdapterAbstract
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                self::getInstance()->putObject([
+                $this->getInstance()->putObject([
                     'Bucket' => $config['bucket'],
                     'Key' => $object,
                     'Body' => fopen($file->getPathname(), 'rb'),
@@ -93,7 +93,7 @@ class CosAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $config = config('plugin.tinywan.storage.app.storage.cos');
+        $config = $this->config;
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
@@ -106,7 +106,7 @@ class CosAdapter extends AdapterAbstract
             'extension' => $file->getExtension(),
         ];
 
-        self::getInstance()->putObject([
+        $this->getInstance()->putObject([
             'Bucket' => $config['bucket'],
             'Key' => $object,
             'Body' => fopen($file->getPathname(), 'rb'),
@@ -125,11 +125,11 @@ class CosAdapter extends AdapterAbstract
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $config = config('plugin.tinywan.storage.app.storage.cos');
+        $config = $this->config;
         $uniqueId = date('YmdHis').uniqid();
         $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
-        self::getInstance()->putObject([
+        $this->getInstance()->putObject([
             'Bucket' => $config['bucket'],
             'Key' => $object,
             'Body' => base64_decode($base64[1]),

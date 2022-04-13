@@ -15,9 +15,9 @@ use Tinywan\Storage\Exception\StorageException;
  * @see Storage
  * @mixin Storage
  *
- * @method static uploadFile(array $config = [])                          上传文件
- * @method static uploadBase64(string $base64, string $extension = 'png') 上传Base64文件
- * @method static uploadServerFile(string $file_path)                     上传服务端文件
+ * @method static array uploadFile(array $config = [])                          上传文件
+ * @method static array uploadBase64(string $base64, string $extension = 'png') 上传Base64文件
+ * @method static array uploadServerFile(string $file_path)                     上传服务端文件
  */
 class Storage
 {
@@ -71,9 +71,11 @@ class Storage
         if (!isset($config[$storage]) || empty($config[$storage]['adapter'])) {
             throw new StorageException('对应的adapter不存在');
         }
-        static::$adapter = new $config[$storage]['adapter']([
-            '_storage' => $storage,
-            '_is_file_upload' => $_is_file_upload,
-        ]);
+        static::$adapter = new $config[$storage]['adapter'](array_merge(
+            $config[$storage],
+            [
+                '_is_file_upload' => $_is_file_upload,
+            ]
+        ));
     }
 }
