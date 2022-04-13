@@ -53,7 +53,7 @@ class CosAdapter extends AdapterAbstract
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $this->dirname.$this->dirSeparator.$saveName;
+                $object = $this->config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
@@ -92,7 +92,7 @@ class CosAdapter extends AdapterAbstract
         }
 
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
-        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
+        $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),
@@ -122,12 +122,11 @@ class CosAdapter extends AdapterAbstract
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $config = $this->config;
         $uniqueId = date('YmdHis').uniqid();
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
+        $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
         $this->getInstance()->putObject([
-            'Bucket' => $config['bucket'],
+            'Bucket' => $this->config['bucket'],
             'Key' => $object,
             'Body' => base64_decode($base64[1]),
         ]);
@@ -137,7 +136,7 @@ class CosAdapter extends AdapterAbstract
 
         return [
             'save_path' => $object,
-            'url' => $config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $fileSize,
             'extension' => $extension,

@@ -48,7 +48,7 @@ class OssAdapter extends AdapterAbstract
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $this->dirname.$this->dirSeparator.$saveName;
+                $object = $this->config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
@@ -85,7 +85,7 @@ class OssAdapter extends AdapterAbstract
         $base64 = explode(',', $base64);
         $bucket = $this->config['bucket'];
         $uniqueId = date('YmdHis').uniqid();
-        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$extension;
+        $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
         try {
             $result = $this->getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
@@ -122,7 +122,7 @@ class OssAdapter extends AdapterAbstract
         }
 
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
-        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
+        $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),

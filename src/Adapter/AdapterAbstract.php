@@ -66,11 +66,6 @@ abstract class AdapterAbstract implements AdapterInterface
     protected $config;
 
     /**
-     * 目录名称.
-     */
-    protected $dirname;
-
-    /**
      * AdapterAbstract constructor.
      *
      * @author Tinywan(ShaoBo Wan)
@@ -122,12 +117,8 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
         $this->config = $config;
 
-        // 目录处理
         if (is_callable($this->config['dirname'])) {
-            $this->dirname = (string) $this->config['dirname']() ?: '';
-        }
-        if (!empty($this->config['dirname'])) {
-            $this->dirname = DIRECTORY_SEPARATOR.ltrim($this->$this->dirname, DIRECTORY_SEPARATOR); // 避免没有加前置 “/”
+            $this->config['dirname'] = (string) $this->config['dirname']() ?: $this->config['dirname'];
         }
     }
 

@@ -21,11 +21,11 @@ class LocalAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         $result = [];
-        $basePath = $this->config['root'].$this->dirname.DIRECTORY_SEPARATOR;
+        $basePath = $this->config['root'].$this->config['dirname'].DIRECTORY_SEPARATOR;
         if (!$this->createDir($basePath)) {
             throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
         }
-        $baseUrl = $this->config['domain'].$this->config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $this->dirname).'/';
+        $baseUrl = $this->config['domain'].$this->config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $$this->config['dirname']).'/';
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file('sha1', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
