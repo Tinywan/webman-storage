@@ -21,19 +21,11 @@ class LocalAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         $result = [];
-        $config = $this->config;
-        $dirname = $config['dirname'];
-        if (is_callable($dirname)) {
-            $dirname = (string) $dirname() ?: '';
-        }
-        if (!empty($dirname)){
-            $dirname = DIRECTORY_SEPARATOR.ltrim($dirname, DIRECTORY_SEPARATOR); // 避免没有加前置 “/”
-        }
-        $basePath = $config['root'].$dirname.DIRECTORY_SEPARATOR;
+        $basePath = $this->config['root'].$this->dirname.DIRECTORY_SEPARATOR;
         if (!$this->createDir($basePath)) {
             throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
         }
-        $baseUrl = $config['domain'].$config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $dirname).'/';
+        $baseUrl = $this->config['domain'].$this->config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $this->dirname).'/';
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file('sha1', $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
@@ -56,7 +48,11 @@ class LocalAdapter extends AdapterAbstract
         return $result;
     }
 
-
+    /**
+     * @desc: createDir 描述
+     *
+     * @author Tinywan(ShaoBo Wan)
+     */
     protected function createDir(string $path): bool
     {
         // 判断传过来的$path是否已是目录，若是，则直接返回true

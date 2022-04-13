@@ -59,10 +59,16 @@ abstract class AdapterAbstract implements AdapterInterface
     protected $nums;
 
     /**
-     * 设置
+     * 当前存储配置.
+     *
      * @var array
      */
     protected $config;
+
+    /**
+     * 目录名称.
+     */
+    protected $dirname;
 
     /**
      * AdapterAbstract constructor.
@@ -115,6 +121,14 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->totalLimit = $config['total_limit'] ?? $defaultConfig['total_limit'];
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
         $this->config = $config;
+
+        // 目录处理
+        if (is_callable($this->config['dirname'])) {
+            $this->dirname = (string) $this->config['dirname']() ?: '';
+        }
+        if (!empty($this->config['dirname'])) {
+            $this->dirname = DIRECTORY_SEPARATOR.ltrim($this->$this->dirname, DIRECTORY_SEPARATOR); // 避免没有加前置 “/”
+        }
     }
 
     /**

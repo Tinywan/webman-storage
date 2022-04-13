@@ -26,11 +26,10 @@ class OssAdapter extends AdapterAbstract
     public function getInstance(): ?OssClient
     {
         if (is_null($this->instance)) {
-            $config = $this->config;
             $this->instance = new OssClient(
-                $config['accessKeyId'],
-                $config['accessKeySecret'],
-                $config['endpoint']
+                $this->config['accessKeyId'],
+                $this->config['accessKeySecret'],
+                $this->config['endpoint']
             );
         }
 
@@ -45,24 +44,23 @@ class OssAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         try {
-            $config = $this->config;
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'].$this->dirSeparator.$saveName;
+                $object = $this->dirname.$this->dirSeparator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].$this->dirSeparator.$object,
+                    'url' => $this->config['domain'].$this->dirSeparator.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                $upload = $this->getInstance()->uploadFile($config['bucket'], $object, $file->getPathname());
+                $upload = $this->getInstance()->uploadFile($this->config['bucket'], $object, $file->getPathname());
                 if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
                     throw new StorageException((string) $upload);
                 }
@@ -85,10 +83,9 @@ class OssAdapter extends AdapterAbstract
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $config = $this->config;
-        $bucket = $config['bucket'];
+        $bucket = $this->config['bucket'];
         $uniqueId = date('YmdHis').uniqid();
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
+        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$extension;
 
         try {
             $result = $this->getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
@@ -103,7 +100,7 @@ class OssAdapter extends AdapterAbstract
 
         return [
             'save_path' => $object,
-            'url' => $config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $fileSize,
             'extension' => $extension,
@@ -123,19 +120,19 @@ class OssAdapter extends AdapterAbstract
         if (!$file->isFile()) {
             throw new StorageException('不是一个有效的文件');
         }
-        $config = $this->config;
+
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
+        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),
             'save_path' => $object,
-            'url' => $config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $file->getSize(),
             'extension' => $file->getExtension(),
         ];
-        $upload = $this->getInstance()->uploadFile($config['bucket'], $object, $file->getRealPath());
+        $upload = $this->getInstance()->uploadFile($this->config['bucket'], $object, $file->getRealPath());
         if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
             throw new StorageException((string) $upload);
         }

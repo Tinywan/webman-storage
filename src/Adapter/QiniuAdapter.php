@@ -32,13 +32,15 @@ class QiniuAdapter extends AdapterAbstract
         return $this->instance;
     }
 
+    /**
+     * @desc: getUploadToken 描述
+     */
     public function getUploadToken(): string
     {
         if ($this->uploadToken) {
-            $config = $this->config;
-            $auth = new Auth($config['accessKey'], $config['secretKey']);
+            $auth = new Auth($this->config['accessKey'], $this->config['secretKey']);
 
-            $this->uploadToken = $auth->uploadToken($config['bucket']);
+            $this->uploadToken = $auth->uploadToken($this->config['bucket']);
         }
 
         return $this->uploadToken;
@@ -52,18 +54,17 @@ class QiniuAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         try {
-            $config = $this->config;
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'].$this->dirSeparator.$saveName;
+                $object = $this->dirname.$this->dirSeparator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].$this->dirSeparator.$object,
+                    'url' => $this->config['domain'].$this->dirSeparator.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
@@ -94,39 +95,39 @@ class QiniuAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $config = $this->config;
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
+        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),
             'save_path' => $object,
-            'url' => $config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $file->getSize(),
-            'extension' => $file->getExtension()
+            'extension' => $file->getExtension(),
         ];
 
         list($ret, $err) = $this->getInstance()->putFile($this->getUploadToken(), $object, $file->getPathname());
         if (!empty($err)) {
             throw new StorageException((string) $err);
         }
+
         return $result;
     }
 
     /**
-     * 上传Base64
-     * @param  string  $base64
-     * @param  string  $extension
+     * 上传Base64.
+     *
+     * @param string $base64
+     * @param string $extension
      * @return array
-     * @throws \Exception
+     *
      */
-    public function uploadBase64(string $base64, string $extension = 'png')
+    public function uploadBase64(string $base64, string $extension = 'png'): array
     {
         $base64 = explode(',', $base64);
-        $config = $this->config;
         $uniqueId = date('YmdHis').uniqid();
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
+        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$extension;
 
         list($ret, $err) = $this->getInstance()->put($this->getUploadToken(), $object, base64_decode($base64[1]));
         if (!empty($err)) {
@@ -135,9 +136,10 @@ class QiniuAdapter extends AdapterAbstract
 
         $imgLen = strlen($base64['1']);
         $fileSize = $imgLen - ($imgLen / 8) * 2;
+
         return [
             'save_path' => $object,
-            'url' => $config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $fileSize,
             'extension' => $extension,

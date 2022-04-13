@@ -28,13 +28,12 @@ class CosAdapter extends AdapterAbstract
     public function getInstance(): ?Client
     {
         if (is_null($this->instance)) {
-            $config = $this->config;
             $this->instance = new Client([
-                'region' => $config['region'],
+                'region' => $this->config['region'],
                 'schema' => 'https',
                 'credentials' => [
-                    'secretId' => $config['secretId'],
-                    'secretKey' => $config['secretKey'],
+                    'secretId' => $this->config['secretId'],
+                    'secretKey' => $this->config['secretKey'],
                 ],
             ]);
         }
@@ -50,25 +49,24 @@ class CosAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         try {
-            $config = $this->config;
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $config['dirname'].$this->dirSeparator.$saveName;
+                $object = $this->dirname.$this->dirSeparator.$saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $config['domain'].$this->dirSeparator.$object,
+                    'url' => $this->config['domain'].$this->dirSeparator.$object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
                 $this->getInstance()->putObject([
-                    'Bucket' => $config['bucket'],
+                    'Bucket' => $this->config['bucket'],
                     'Key' => $object,
                     'Body' => fopen($file->getPathname(), 'rb'),
                 ]);
@@ -93,21 +91,20 @@ class CosAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $config = $this->config;
         $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
-        $object = $config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
+        $object = $this->dirname.$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),
             'save_path' => $object,
-            'url' => $config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'].$this->dirSeparator.$object,
             'unique_id' => $uniqueId,
             'size' => $file->getSize(),
             'extension' => $file->getExtension(),
         ];
 
         $this->getInstance()->putObject([
-            'Bucket' => $config['bucket'],
+            'Bucket' => $this->config['bucket'],
             'Key' => $object,
             'Body' => fopen($file->getPathname(), 'rb'),
         ]);
@@ -118,7 +115,7 @@ class CosAdapter extends AdapterAbstract
     /**
      * @desc: 上传Base64
      *
-     * @return array|bool
+     * @return array
      *
      * @author Tinywan(ShaoBo Wan)
      */
