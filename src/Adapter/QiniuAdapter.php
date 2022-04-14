@@ -116,11 +116,6 @@ class QiniuAdapter extends AdapterAbstract
 
     /**
      * 上传Base64.
-     *
-     * @param string $base64
-     * @param string $extension
-     * @return array
-     *
      */
     public function uploadBase64(string $base64, string $extension = 'png'): array
     {
