@@ -66,6 +66,13 @@ abstract class AdapterAbstract implements AdapterInterface
     protected $config;
 
     /**
+     * 命名规则 eg：md5：对文件使用md5_file散列生成，sha1：对文件使用sha1_file散列生成.
+     *
+     * @var string
+     */
+    protected $algo = 'md5';
+
+    /**
      * AdapterAbstract constructor.
      *
      * @author Tinywan(ShaoBo Wan)
@@ -115,8 +122,8 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->singleLimit = $config['single_limit'] ?? $defaultConfig['single_limit'];
         $this->totalLimit = $config['total_limit'] ?? $defaultConfig['total_limit'];
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
+        $this->algo = $config['algo'] ?? $this->algo;
         $this->config = $config;
-
         if (is_callable($this->config['dirname'])) {
             $this->config['dirname'] = (string) $this->config['dirname']() ?: $this->config['dirname'];
         }

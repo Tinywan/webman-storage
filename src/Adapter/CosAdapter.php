@@ -51,7 +51,7 @@ class CosAdapter extends AdapterAbstract
         try {
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
+                $uniqueId = hash_file($this->algo, $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $this->config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -91,7 +91,7 @@ class CosAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
+        $uniqueId = hash_file($this->algo, $file->getPathname());
         $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [

@@ -46,7 +46,7 @@ class OssAdapter extends AdapterAbstract
         try {
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
+                $uniqueId = hash_file($this->algo, $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $this->config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -83,12 +83,11 @@ class OssAdapter extends AdapterAbstract
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $bucket = $this->config['bucket'];
         $uniqueId = date('YmdHis').uniqid();
         $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
 
         try {
-            $result = $this->getInstance()->putObject($bucket, $object, base64_decode($base64[1]));
+            $result = $this->getInstance()->putObject($this->config['bucket'], $object, base64_decode($base64[1]));
             if (!isset($result['info']) && 200 != $result['info']['http_code']) {
                 return $this->setError(false, (string) $result);
             }
@@ -121,7 +120,7 @@ class OssAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
+        $uniqueId = hash_file($this->algo, $file->getPathname());
         $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [

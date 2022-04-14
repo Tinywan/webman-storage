@@ -28,7 +28,7 @@ class LocalAdapter extends AdapterAbstract
 
         $baseUrl = $this->config['domain'].$this->config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $this->config['dirname']).DIRECTORY_SEPARATOR;
         foreach ($this->files as $key => $file) {
-            $uniqueId = hash_file('sha1', $file->getPathname());
+            $uniqueId = hash_file($this->algo, $file->getPathname());
             $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
             $savePath = $basePath.$saveFilename;
             $temp = [

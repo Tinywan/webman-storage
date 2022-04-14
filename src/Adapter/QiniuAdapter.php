@@ -39,7 +39,6 @@ class QiniuAdapter extends AdapterAbstract
     {
         if ($this->uploadToken) {
             $auth = new Auth($this->config['accessKey'], $this->config['secretKey']);
-
             $this->uploadToken = $auth->uploadToken($this->config['bucket']);
         }
 
@@ -56,7 +55,7 @@ class QiniuAdapter extends AdapterAbstract
         try {
             $result = [];
             foreach ($this->files as $key => $file) {
-                $uniqueId = hash_file('sha1', $file->getPathname());
+                $uniqueId = hash_file($this->algo, $file->getPathname());
                 $saveName = $uniqueId.'.'.$file->getUploadExtension();
                 $object = $this->config['dirname'].$this->dirSeparator.$saveName;
                 $temp = [
@@ -95,7 +94,7 @@ class QiniuAdapter extends AdapterAbstract
             throw new StorageException('不是一个有效的文件');
         }
 
-        $uniqueId = hash_file('sha1', $file->getPathname()).date('YmdHis');
+        $uniqueId = hash_file($this->algo, $file->getPathname());
         $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
 
         $result = [
