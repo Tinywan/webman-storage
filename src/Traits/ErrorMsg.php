@@ -5,7 +5,6 @@
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/8 16:07
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Traits;
@@ -15,7 +14,7 @@ trait ErrorMsg
     /**
      * 错误消息.
      */
-    public array $error = [
+    public $error = [
         'message' => '错误消息',
         'data' => [],
     ];

@@ -1,19 +1,17 @@
 <?php
-
 /**
  * @desc StaticErrorMsg.php 描述信息
  *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 19:29
  */
-
 declare(strict_types=1);
 
 namespace Tinywan\Storage\Traits;
 
 trait StaticErrorMsg
 {
-    public static string $message = 'success';
+    public static $message = 'success';
 
     /**
      * @desc: 设置错误消息
