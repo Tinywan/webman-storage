@@ -78,6 +78,7 @@ abstract class AdapterAbstract implements AdapterInterface
      */
     public function __construct(array $config = [])
     {
+        $this->loadConfig($config);
         $this->dirSeparator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
         $this->_isFileUpload = $config['_is_file_upload'] ?? true;
         if ($this->_isFileUpload) {
@@ -87,7 +88,6 @@ abstract class AdapterAbstract implements AdapterInterface
             $this->singleLimit = 0;
             $this->totalLimit = 0;
             $this->nums = 0;
-            $this->loadConfig($config);
             $this->verify();
         }
     }

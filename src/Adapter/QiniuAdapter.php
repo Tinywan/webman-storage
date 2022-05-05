@@ -18,14 +18,14 @@ class QiniuAdapter extends AdapterAbstract
 {
     protected $instance = null;
 
-    protected $uploadToken;
+    protected $uploadToken = null;
 
     /**
      * @desc: 实例
      */
     public function getInstance(): ?UploadManager
     {
-        if (is_null($this->instance)) {
+        if (!$this->instance) {
             $this->instance = new UploadManager();
         }
 
@@ -33,11 +33,13 @@ class QiniuAdapter extends AdapterAbstract
     }
 
     /**
-     * @desc: getUploadToken 描述
+     * @desc: 获取上传令牌
+     * @return string
+     * @author Tinywan(ShaoBo Wan)
      */
     public function getUploadToken(): string
     {
-        if ($this->uploadToken) {
+        if (!$this->uploadToken) {
             $auth = new Auth($this->config['accessKey'], $this->config['secretKey']);
             $this->uploadToken = $auth->uploadToken($this->config['bucket']);
         }
@@ -46,8 +48,9 @@ class QiniuAdapter extends AdapterAbstract
     }
 
     /**
-     * @desc: 方法描述
-     *
+     * @desc: 上传文件
+     * @param array $options
+     * @return array
      * @author Tinywan(ShaoBo Wan)
      */
     public function uploadFile(array $options = []): array
