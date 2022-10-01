@@ -123,8 +123,8 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
         $this->algo = $config['algo'] ?? $this->algo;
         $this->config = $config;
-        $this->config['include'] = $config['include'] ?? $defaultConfig['include'];
-        $this->config['exclude'] = $config['exclude'] ?? $defaultConfig['exclude'];
+        $this->config['includes'] = $config['include'] ?? $defaultConfig['include'];
+        $this->config['excludes'] = $config['exclude'] ?? $defaultConfig['exclude'];
         $this->config['single_limit'] = $config['single_limit'] ?? $defaultConfig['single_limit'];
         $this->config['total_limit'] = $config['total_limit'] ?? $defaultConfig['total_limit'];
         $this->config['total_limit'] = $config['total_limit'] ?? $defaultConfig['total_limit'];
