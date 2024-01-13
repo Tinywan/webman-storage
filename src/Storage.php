@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage;
 
+
 /**
  * @see Storage
  * @mixin Storage
@@ -50,28 +51,19 @@ class Storage
     ];
 
     /**
-     * @var
-     */
-    protected static $adapter = null;
-
-    /**
      * @desc config
-     * @param string $storage
+     * @param string|null $storage
      * @param bool $_is_file_upload
      * @return mixed
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function config(string $storage = self::MODE_LOCAL, bool $_is_file_upload = true)
+    public static function config(string $storage = null, bool $_is_file_upload = true)
     {
         $storage = $storage ?? self::getDefaultStorage();
-        if (isset(static::$adapter[$storage])) {
-            return static::$adapter[$storage];
-        }
         $config = self::getConfig($storage);
-        static::$adapter[$storage] = new $config[$storage]['adapter'](array_merge(
-            $config[$storage], ['_is_file_upload' => $_is_file_upload]
+        return new $config['adapter'](array_merge(
+            $config, ['_is_file_upload' => $_is_file_upload]
         ));
-        return static::$adapter[$storage];
     }
 
     /**
@@ -87,14 +79,13 @@ class Storage
     /**
      * @desc: 获取存储配置
      * @param string|null $name 名称
-     * @param null $default 默认值
      * @return mixed
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function getConfig(string $name = null, $default = null)
+    public static function getConfig(string $name = null)
     {
         if (!is_null($name)) {
-            return config('plugin.tinywan.storage.app.storage.' . $name, $default);
+            return config('plugin.tinywan.storage.app.storage.' . $name, self::MODE_LOCAL);
         }
         return config('plugin.tinywan.storage.app.storage.default');
     }
