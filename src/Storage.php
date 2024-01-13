@@ -1,6 +1,6 @@
 <?php
 /**
- * @desc 存储面板
+ * @desc StorageService
  *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 20:03
@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 namespace Tinywan\Storage;
+
 
 /**
  * @see Storage
@@ -50,13 +51,13 @@ class Storage
     ];
 
     /**
-     * @desc config
+     * @desc 存储磁盘
      * @param string|null $name
      * @param bool $_is_file_upload
      * @return mixed
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function storage(string $name = null, bool $_is_file_upload = true)
+    public static function disk(string $name = null, bool $_is_file_upload = true)
     {
         $storage = $name ?? self::getDefaultStorage();
         $config = self::getConfig($storage);
@@ -97,6 +98,6 @@ class Storage
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::storage()->{$name}(...$arguments);
+        return static::disk()->{$name}(...$arguments);
     }
 }

@@ -26,12 +26,10 @@ composer require tinywan/storage
 ## 基本用法
 
 ```php
-/** v1.0.0 版本之后不需要调用此方法，会自动初始化，默认为配置文件default配置上传适配器 */
-// Tinywan\Storage\Storage::config(); // 初始化。 默认为本地存储：local，阿里云：oss，腾讯云：cos，七牛：qiniu
-
 $res = Tinywan\Storage\Storage::uploadFile();
 var_dump(json_encode($res));
 ```
+> ~~`v1.0.0` 版本之后不需要调用此方法`Tinywan\Storage\Storage::config()` 初始化，会自动初始化，默认为配置文件`app.php`默认配置`default`配置上传适配器。~~
 
 ### 上传成功信息
 ```json
@@ -128,27 +126,15 @@ composer require qiniu/php-sdk
 ```
 #### 请求案例（阿里云）
 
-
-**v1.0.0 之后版本（推荐）**
 ```php
 public function upload(Request $request)
 {
     $base64 = $request->post('base64');
-    $response = \Tinywan\Storage\Storage::storage(Storage::MODE_OSS, false)->uploadBase64($base64,'png');
+    $response = \Tinywan\Storage\Storage::disk(\Tinywan\Storage\Storage::MODE_OSS, false)->uploadBase64($base64,'png');
     var_dump($response);
 }
 ```
-
-**v1.0.0 之前版本（不推荐）**
-```php
-public function upload(Request $request)
-{
-    Storage::config(Storage::MODE_OSS, false); // 第一个参数为存储方式。第二个参数为是否本地文件（默认是）
-    $base64 = $request->post('base64');
-    $r = Storage::uploadBase64($base64,'png');
-    var_dump($r);
-}
-```
+> ~~`v1.0.0` 版本之后不需要调用此方法`Tinywan\Storage\Storage::config()` 初始化，会自动初始化，默认为配置文件`app.php`默认配置`default`配置上传适配器。~~
 
 #### 响应参数
 ```json
@@ -167,10 +153,11 @@ public function upload(Request $request)
 #### 请求案例（阿里云）
 
 ```php
-Storage::config(Storage::MODE_OSS,false);
-$localFile = runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png';
-$res = Storage::uploadServerFile($localFile);
+$serverFile = runtime_path() . DIRECTORY_SEPARATOR . 'storage/webman.png';
+$res = \Tinywan\Storage\Storage::disk(\Tinywan\Storage\Storage::MODE_OSS, false)->uploadServerFile($serverFile);
 ```
+> ~~`v1.0.0` 版本之后不需要调用此方法`Tinywan\Storage\Storage::config()` 初始化，会自动初始化，默认为配置文件`app.php`默认配置`default`配置上传适配器。~~
+
 
 #### 响应参数
 
