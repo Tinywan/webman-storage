@@ -9,15 +9,13 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage;
 
-use Tinywan\Storage\Exception\StorageException;
-
 /**
  * @see Storage
  * @mixin Storage
  *
- * @method static array uploadFile(array $config = [])                          上传文件
+ * @method static array uploadFile(array $config = [])  上传文件
  * @method static array uploadBase64(string $base64, string $extension = 'png') 上传Base64文件
- * @method static array uploadServerFile(string $file_path)                     上传服务端文件
+ * @method static array uploadServerFile(string $file_path)  上传服务端文件
  */
 class Storage
 {
@@ -42,40 +40,73 @@ class Storage
     public const MODE_QINIU = 'qiniu';
 
     /**
+     * Support Storage
+     */
+    static $allowStorage = [
+        self::MODE_LOCAL,
+        self::MODE_OSS,
+        self::MODE_COS,
+        self::MODE_QINIU
+    ];
+
+    /**
      * @var
      */
     protected static $adapter = null;
 
     /**
+     * @desc config
+     * @param string $storage
+     * @param bool $_is_file_upload
+     * @return mixed
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public static function config(string $storage = self::MODE_LOCAL, bool $_is_file_upload = true)
+    {
+        $storage = $storage ?? self::getDefaultStorage();
+        if (isset(static::$adapter[$storage])) {
+            return static::$adapter[$storage];
+        }
+        $config = self::getConfig($storage);
+        static::$adapter[$storage] = new $config[$storage]['adapter'](array_merge(
+            $config[$storage], ['_is_file_upload' => $_is_file_upload]
+        ));
+        return static::$adapter[$storage];
+    }
+
+    /**
+     * @desc: 默认存储
+     * @return mixed
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public static function getDefaultStorage()
+    {
+        return self::getConfig('default');
+    }
+
+    /**
+     * @desc: 获取存储配置
+     * @param string|null $name 名称
+     * @param null $default 默认值
+     * @return mixed
+     * @author Tinywan(ShaoBo Wan)
+     */
+    public static function getConfig(string $name = null, $default = null)
+    {
+        if (!is_null($name)) {
+            return config('plugin.tinywan.storage.app.storage.' . $name, $default);
+        }
+        return config('plugin.tinywan.storage.app.storage.default');
+    }
+
+    /**
      * @param $name
      * @param $arguments
-     *
      * @return mixed
-     *
      * @author Tinywan(ShaoBo Wan)
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::$adapter->{$name}(...$arguments);
-    }
-
-    /**
-     * @desc: 方法描述
-     *
-     * @author Tinywan(ShaoBo Wan)
-     */
-    public static function config(string $storage = null, bool $_is_file_upload = true)
-    {
-        $config = config('plugin.tinywan.storage.app.storage');
-        $storage = $storage ?: $config['default'];
-        if (!isset($config[$storage]) || empty($config[$storage]['adapter'])) {
-            throw new StorageException('对应的adapter不存在');
-        }
-        static::$adapter = new $config[$storage]['adapter'](array_merge(
-            $config[$storage],
-            [
-                '_is_file_upload' => $_is_file_upload,
-            ]
-        ));
+        return static::config()->{$name}(...$arguments);
     }
 }
