@@ -71,7 +71,7 @@ runtime/storage/fd2d472da56c71a6da0a5251f5e1b586.png
 ```
 如果你希望上传的文件是可以直接访问或者下载的话，可以使用`public`存储方式。
 
-你可以在`config/plugin/tinywan/storage/pp.php`配置文件中配置上传根目录，例如：
+你可以在`config/plugin/tinywan/storage/app.php`配置文件中配置上传根目录，例如：
 
 ```php
 'local' => [
