@@ -1,6 +1,6 @@
 <?php
 /**
- * @desc StorageService
+ * @desc 存储面板
  *
  * @author Tinywan(ShaoBo Wan)
  * @date 2022/3/7 20:03
@@ -8,7 +8,6 @@
 declare(strict_types=1);
 
 namespace Tinywan\Storage;
-
 
 /**
  * @see Storage
@@ -52,14 +51,14 @@ class Storage
 
     /**
      * @desc config
-     * @param string|null $storage
+     * @param string|null $name
      * @param bool $_is_file_upload
      * @return mixed
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function config(string $storage = null, bool $_is_file_upload = true)
+    public static function storage(string $name = null, bool $_is_file_upload = true)
     {
-        $storage = $storage ?? self::getDefaultStorage();
+        $storage = $name ?? self::getDefaultStorage();
         $config = self::getConfig($storage);
         return new $config['adapter'](array_merge(
             $config, ['_is_file_upload' => $_is_file_upload]
@@ -98,6 +97,6 @@ class Storage
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::config()->{$name}(...$arguments);
+        return static::storage()->{$name}(...$arguments);
     }
 }

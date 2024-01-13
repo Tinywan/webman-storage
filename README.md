@@ -37,7 +37,9 @@ composer require tinywan/storage
 ## 基本用法
 
 ```php
-Tinywan\Storage\Storage::config(); // 初始化。 默认为本地存储：local，阿里云：oss，腾讯云：cos，七牛：qiniu
+/** v1.0.0 版本之后不需要调用此方法，会自动初始化，默认为配置文件default配置上传适配器 */
+// Tinywan\Storage\Storage::config(); // 初始化。 默认为本地存储：local，阿里云：oss，腾讯云：cos，七牛：qiniu
+
 $res = Tinywan\Storage\Storage::uploadFile();
 var_dump(json_encode($res));
 ```
@@ -137,6 +139,18 @@ composer require qiniu/php-sdk
 ```
 #### 请求案例（阿里云）
 
+
+**v1.0.0 之后版本（推荐）**
+```php
+public function upload(Request $request)
+{
+    $base64 = $request->post('base64');
+    $response = \Tinywan\Storage\Storage::storage(Storage::MODE_OSS, false)->uploadBase64($base64,'png');
+    var_dump($response);
+}
+```
+
+**v1.0.0 之前版本（不推荐）**
 ```php
 public function upload(Request $request)
 {
