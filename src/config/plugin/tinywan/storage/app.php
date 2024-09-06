@@ -58,5 +58,18 @@ return [
             'dirname' => 'storage',
             'domain' => 'http://webman.oss.tinywan.com',
         ],
+        // aws
+        's3' => [
+            'adapter' => \Tinywan\Storage\Adapter\S3Adapter::class,
+            'accessKey' => 'xxxxxxxxxxxxx',
+            'secretKey' => 'xxxxxxxxxxxxx',
+            'bucket' => 'resty-webman',
+            'dirname' => 'storage',
+            'domain' => 'http://webman.oss.tinywan.com',
+            'region' => 'S3_REGION',
+            'version' => 'latest',
+            'use_path_style_endpoint' => true,
+            'endpoint' => 'S3_ENDPOINT',
+        ],
     ],
 ];

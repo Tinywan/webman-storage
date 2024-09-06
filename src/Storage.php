@@ -41,13 +41,19 @@ class Storage
     public const MODE_QINIU = 'qiniu';
 
     /**
+     * S3对象存储.
+     */
+    public const MODE_S3 = 's3';
+
+    /**
      * Support Storage
      */
     static $allowStorage = [
         self::MODE_LOCAL,
         self::MODE_OSS,
         self::MODE_COS,
-        self::MODE_QINIU
+        self::MODE_QINIU,
+        self::MODE_S3
     ];
 
     /**

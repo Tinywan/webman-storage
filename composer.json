@@ -24,6 +24,7 @@
     "phpunit/phpunit": "^9.5",
     "aliyuncs/oss-sdk-php": "^2.4",
     "qcloud/cos-sdk-v5": "^2.5",
-    "qiniu/php-sdk": "^7.4"
+    "qiniu/php-sdk": "^7.4",
+    "league/flysystem-aws-s3-v3": "^1.0"
   }
 }
