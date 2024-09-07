@@ -70,6 +70,7 @@ return [
             'version' => 'latest',
             'use_path_style_endpoint' => true,
             'endpoint' => 'S3_ENDPOINT',
+            'acl' => 'public-read',
         ],
     ],
 ];

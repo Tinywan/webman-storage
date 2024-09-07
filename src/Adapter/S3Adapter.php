@@ -27,7 +27,8 @@ class S3Adapter extends AdapterAbstract
     {
         if (is_null($this->instance)) {
             $this->instance = new S3Client([
-                'version' => 'latest',
+                'version' => $this->config['version'],
+                'endpoint' => $this->config['endpoint'],
                 'region' => $this->config['region'],
                 'use_path_style_endpoint' => $this->config['use_path_style_endpoint'],
                 'credentials' => [
@@ -50,16 +51,6 @@ class S3Adapter extends AdapterAbstract
     {
         try {
             $result = [];
-//            $options = [
-//                'ACL'           => 'public-read', // 访问控制列表
-//                'Metadata'      => [
-//                    'my-key' => 'my-value', // 自定义元数据
-//                ],
-//                'StorageClass'  => 'STANDARD', // 存储类
-//                'ContentType'   => 'text/plain', // MIME 类型
-//                'ServerSideEncryption' => 'AES256', // 服务器端加密
-//                'CacheControl'  => 'max-age=3600', // 缓存控制
-//            ];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file($this->algo, $file->getPathname());
                 $saveName = $uniqueId . '.' . $file->getUploadExtension();
@@ -79,7 +70,7 @@ class S3Adapter extends AdapterAbstract
                     'Bucket' => $this->config['bucket'],
                     'Key' => $object,
                     'Body' => fopen($file->getPathname(), 'rb'),
-                    'SourceFile' => $file->getPathname()
+                    'ACL' => $this->config['acl']
                 ]);
                 $result[] = $temp;
             }
@@ -119,6 +110,7 @@ class S3Adapter extends AdapterAbstract
             'Bucket' => $this->config['bucket'],
             'Key' => $object,
             'Body' => fopen($file->getPathname(), 'rb'),
+            'ACL' => $this->config['acl']
         ]);
 
         return $result;
@@ -141,6 +133,7 @@ class S3Adapter extends AdapterAbstract
             'Bucket' => $this->config['bucket'],
             'Key' => $object,
             'Body' => base64_decode($base64[1]),
+            'ACL' => $this->config['acl']
         ]);
 
         $imgLen = strlen($base64['1']);
