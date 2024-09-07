@@ -61,8 +61,8 @@ return [
         // aws
         's3' => [
             'adapter' => \Tinywan\Storage\Adapter\S3Adapter::class,
-            'accessKey' => 'xxxxxxxxxxxxx',
-            'secretKey' => 'xxxxxxxxxxxxx',
+            'key' => 'xxxxxxxxxxxxx',
+            'secret' => 'xxxxxxxxxxxxx',
             'bucket' => 'resty-webman',
             'dirname' => 'storage',
             'domain' => 'http://webman.oss.tinywan.com',

@@ -32,8 +32,8 @@ class S3Adapter extends AdapterAbstract
                 'region' => $this->config['region'],
                 'use_path_style_endpoint' => $this->config['use_path_style_endpoint'],
                 'credentials' => [
-                    'key' => $this->config['secretId'],
-                    'secret' => $this->config['secretKey'],
+                    'key' => $this->config['key'],
+                    'secret' => $this->config['secret'],
                 ],
             ]);
         }
