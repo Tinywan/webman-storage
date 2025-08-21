@@ -60,7 +60,7 @@ class OssAdapter extends AdapterAbstract
                     'mime_type' => $file->getUploadMineType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                $upload = $this->getInstance()->uploadFile($this->config['bucket'], $object, $file->getPathname());
+                $upload = $this->getInstance()->uploadFile($this->config['bucket'], $object, $file->getPathname(), $options);
                 if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
                     throw new StorageException((string) $upload);
                 }
