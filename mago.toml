@@ -1,0 +1,46 @@
+version = "1"
+php-version = "8.2"
+
+[source]
+paths = ["src", "tests"]
+includes = ["vendor"]
+
+[formatter]
+empty-line-after-opening-tag = false
+
+[linter.rules]
+# 库需兼容 PHP >= 7.2，禁用依赖高版本语法的规则
+literal-named-argument = { enabled = false }
+prefer-arrow-function = { enabled = false }
+strict-types = { enabled = false }
+# 遗留代码风格，不做强制
+no-empty = { enabled = false }
+no-isset = { enabled = false }
+no-shorthand-ternary = { enabled = false }
+# 示例配置中的占位密钥属于误报
+no-literal-password = { exclude = ["src/config"] }
+# 阈值放宽
+cyclomatic-complexity = { threshold = 40 }
+kan-defect = { threshold = 3.0 }
+halstead = { effort-threshold = 20000 }
+
+[analyzer]
+find-unused-expressions = true
+analyze-dead-code = true
+# 遗留代码缺少类型标注，mixed 类检查噪音过大
+ignore = [
+    "invalid-destructuring-source",  # 七牛 SDK 返回 [ret, err] 无类型标注
+    "invalid-member-selector",       # Storage::__callStatic 动态方法转发
+    "mismatched-array-index",        # 七牛 SDK putFile docblock 标注有误
+    "mixed-argument",
+    "mixed-array-access",
+    "mixed-assignment",
+    "mixed-method-access",
+    "mixed-operand",
+    "mixed-property-type-coercion",
+    "mixed-return-statement",
+    "possible-method-access-on-null", # webman request() 等 helper 无返回类型标注
+    "possibly-false-argument",
+    "too-many-arguments",            # OSS SDK 构造函数使用 func_get_args
+    "unknown-class-instantiation",   # Storage::disk 按配置动态实例化适配器
+]

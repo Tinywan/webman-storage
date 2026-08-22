@@ -181,10 +181,12 @@ $res = \Tinywan\Storage\Storage::disk(\Tinywan\Storage\Storage::MODE_OSS, false)
 
 ## Other
 
-### phpstan
+### 代码质量（Mago + Pest）
 
 ```phpregexp
-vendor/bin/phpstan analyse src
-
-vendor/bin/php-cs-fixer fix src
+composer check        # 格式检查 + lint + 静态分析 + 测试
+composer format       # 代码格式化（mago format）
+composer lint         # 代码规范检查（mago lint）
+composer analyse      # 静态分析（mago analyze）
+composer test         # 单元测试（pest）
 ```

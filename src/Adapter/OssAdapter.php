@@ -16,6 +16,9 @@ use Tinywan\Storage\Exception\StorageException;
 
 class OssAdapter extends AdapterAbstract
 {
+    /**
+     * @var OssClient|null
+     */
     protected $instance = null;
 
     /**
@@ -23,13 +26,13 @@ class OssAdapter extends AdapterAbstract
      *
      * @throws OssException
      */
-    public function getInstance(): ?OssClient
+    public function getInstance(): OssClient
     {
         if (is_null($this->instance)) {
             $this->instance = new OssClient(
                 $this->config['accessKeyId'],
                 $this->config['accessKeySecret'],
-                $this->config['endpoint']
+                $this->config['endpoint'],
             );
         }
 
@@ -47,21 +50,26 @@ class OssAdapter extends AdapterAbstract
             $result = [];
             foreach ($this->files as $key => $file) {
                 $uniqueId = hash_file($this->algo, $file->getPathname());
-                $saveName = $uniqueId.'.'.$file->getUploadExtension();
-                $object = $this->config['dirname'].$this->dirSeparator.$saveName;
+                $saveName = $uniqueId . '.' . $file->getUploadExtension();
+                $object = $this->config['dirname'] . $this->dirSeparator . $saveName;
                 $temp = [
                     'key' => $key,
                     'origin_name' => $file->getUploadName(),
                     'save_name' => $saveName,
                     'save_path' => $object,
-                    'url' => $this->config['domain'].$this->dirSeparator.$object,
+                    'url' => $this->config['domain'] . $this->dirSeparator . $object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
-                    'mime_type' => $file->getUploadMineType(),
+                    'mime_type' => $file->getUploadMimeType(),
                     'extension' => $file->getUploadExtension(),
                 ];
-                $upload = $this->getInstance()->uploadFile($this->config['bucket'], $object, $file->getPathname(), $options);
-                if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
+                $upload = $this->getInstance()->uploadFile(
+                    $this->config['bucket'],
+                    $object,
+                    $file->getPathname(),
+                    $options,
+                );
+                if (!isset($upload['info']) && 200 !== $upload['info']['http_code']) {
                     throw new StorageException((string) $upload);
                 }
                 array_push($result, $temp);
@@ -83,23 +91,23 @@ class OssAdapter extends AdapterAbstract
     public function uploadBase64(string $base64, string $extension = 'png')
     {
         $base64 = explode(',', $base64);
-        $uniqueId = date('YmdHis').uniqid();
-        $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$extension;
+        $uniqueId = date('YmdHis') . uniqid();
+        $object = $this->config['dirname'] . $this->dirSeparator . $uniqueId . '.' . $extension;
 
         try {
             $result = $this->getInstance()->putObject($this->config['bucket'], $object, base64_decode($base64[1]));
-            if (!isset($result['info']) && 200 != $result['info']['http_code']) {
+            if (!isset($result['info']) && 200 !== $result['info']['http_code']) {
                 return $this->setError(false, (string) $result);
             }
         } catch (OssException $e) {
             return $this->setError(false, $e->getMessage());
         }
-        $imgLen = strlen($base64['1']);
-        $fileSize = $imgLen - ($imgLen / 8) * 2;
+        $imgLen = strlen($base64[1]);
+        $fileSize = $imgLen - (($imgLen / 8) * 2);
 
         return [
             'save_path' => $object,
-            'url' => $this->config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'] . $this->dirSeparator . $object,
             'unique_id' => $uniqueId,
             'size' => $fileSize,
             'extension' => $extension,
@@ -121,18 +129,18 @@ class OssAdapter extends AdapterAbstract
         }
 
         $uniqueId = hash_file($this->algo, $file->getPathname());
-        $object = $this->config['dirname'].$this->dirSeparator.$uniqueId.'.'.$file->getExtension();
+        $object = $this->config['dirname'] . $this->dirSeparator . $uniqueId . '.' . $file->getExtension();
 
         $result = [
             'origin_name' => $file->getRealPath(),
             'save_path' => $object,
-            'url' => $this->config['domain'].$this->dirSeparator.$object,
+            'url' => $this->config['domain'] . $this->dirSeparator . $object,
             'unique_id' => $uniqueId,
             'size' => $file->getSize(),
             'extension' => $file->getExtension(),
         ];
         $upload = $this->getInstance()->uploadFile($this->config['bucket'], $object, $file->getRealPath());
-        if (!isset($upload['info']) && 200 != $upload['info']['http_code']) {
+        if (!isset($upload['info']) && 200 !== $upload['info']['http_code']) {
             throw new StorageException((string) $upload);
         }
 

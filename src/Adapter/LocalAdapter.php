@@ -21,25 +21,29 @@ class LocalAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         $result = [];
-        $basePath = $this->config['root'].$this->config['dirname'].DIRECTORY_SEPARATOR;
+        $basePath = $this->config['root'] . $this->config['dirname'] . DIRECTORY_SEPARATOR;
         if (!$this->createDir($basePath)) {
             throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
         }
 
-        $baseUrl = $this->config['domain'].$this->config['uri'].str_replace(DIRECTORY_SEPARATOR, '/', $this->config['dirname']).DIRECTORY_SEPARATOR;
+        $baseUrl =
+            $this->config['domain']
+            . $this->config['uri']
+            . str_replace(DIRECTORY_SEPARATOR, '/', $this->config['dirname'])
+            . DIRECTORY_SEPARATOR;
         foreach ($this->files as $key => $file) {
             $uniqueId = hash_file($this->algo, $file->getPathname());
-            $saveFilename = $uniqueId.'.'.$file->getUploadExtension();
-            $savePath = $basePath.$saveFilename;
+            $saveFilename = $uniqueId . '.' . $file->getUploadExtension();
+            $savePath = $basePath . $saveFilename;
             $temp = [
                 'key' => $key,
                 'origin_name' => $file->getUploadName(),
                 'save_name' => $saveFilename,
                 'save_path' => $savePath,
-                'url' => $baseUrl.$saveFilename,
+                'url' => $baseUrl . $saveFilename,
                 'unique_id' => $uniqueId,
                 'size' => $file->getSize(),
-                'mime_type' => $file->getUploadMineType(),
+                'mime_type' => $file->getUploadMimeType(),
                 'extension' => $file->getUploadExtension(),
             ];
             $file->move($savePath);

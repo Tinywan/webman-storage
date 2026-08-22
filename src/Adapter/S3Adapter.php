@@ -15,7 +15,7 @@ use Tinywan\Storage\Exception\StorageException;
 class S3Adapter extends AdapterAbstract
 {
     /**
-     * @var null
+     * @var S3Client|null
      */
     protected $instance = null;
 
@@ -23,7 +23,7 @@ class S3Adapter extends AdapterAbstract
      * @desc 对象存储实例
      * @author Tinywan(ShaoBo Wan)
      */
-    public function getInstance(): ?S3Client
+    public function getInstance(): S3Client
     {
         if (is_null($this->instance)) {
             $this->instance = new S3Client([
@@ -63,14 +63,14 @@ class S3Adapter extends AdapterAbstract
                     'url' => $this->config['domain'] . $this->dirSeparator . $object,
                     'unique_id' => $uniqueId,
                     'size' => $file->getSize(),
-                    'mime_type' => $file->getUploadMineType(),
+                    'mime_type' => $file->getUploadMimeType(),
                     'extension' => $file->getUploadExtension(),
                 ];
                 $this->getInstance()->putObject([
                     'Bucket' => $this->config['bucket'],
                     'Key' => $object,
                     'Body' => fopen($file->getPathname(), 'rb'),
-                    'ACL' => $this->config['acl']
+                    'ACL' => $this->config['acl'],
                 ]);
                 $result[] = $temp;
             }
@@ -110,7 +110,7 @@ class S3Adapter extends AdapterAbstract
             'Bucket' => $this->config['bucket'],
             'Key' => $object,
             'Body' => fopen($file->getPathname(), 'rb'),
-            'ACL' => $this->config['acl']
+            'ACL' => $this->config['acl'],
         ]);
 
         return $result;
@@ -133,11 +133,11 @@ class S3Adapter extends AdapterAbstract
             'Bucket' => $this->config['bucket'],
             'Key' => $object,
             'Body' => base64_decode($base64[1]),
-            'ACL' => $this->config['acl']
+            'ACL' => $this->config['acl'],
         ]);
 
-        $imgLen = strlen($base64['1']);
-        $fileSize = $imgLen - ($imgLen / 8) * 2;
+        $imgLen = strlen($base64[1]);
+        $fileSize = $imgLen - (($imgLen / 8) * 2);
 
         return [
             'save_path' => $object,
@@ -147,5 +147,4 @@ class S3Adapter extends AdapterAbstract
             'extension' => $extension,
         ];
     }
-
 }

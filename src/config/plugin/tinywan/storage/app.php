@@ -18,7 +18,7 @@ return [
         // 本地对象存储
         'local' => [
             'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
-            'root' => runtime_path().'/storage',
+            'root' => runtime_path() . '/storage',
             'dirname' => function () {
                 return date('Ymd');
             },

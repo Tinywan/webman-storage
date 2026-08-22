@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage;
 
-
 /**
  * @see Storage
  * @mixin Storage
@@ -53,7 +52,7 @@ class Storage
         self::MODE_OSS,
         self::MODE_COS,
         self::MODE_QINIU,
-        self::MODE_S3
+        self::MODE_S3,
     ];
 
     /**
@@ -63,13 +62,11 @@ class Storage
      * @return mixed
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function disk(string $name = null, bool $_is_file_upload = true)
+    public static function disk(?string $name = null, bool $_is_file_upload = true)
     {
         $storage = $name ?? self::getDefaultStorage();
         $config = self::getConfig($storage);
-        return new $config['adapter'](array_merge(
-            $config, ['_is_file_upload' => $_is_file_upload]
-        ));
+        return new $config['adapter'](array_merge($config, ['_is_file_upload' => $_is_file_upload]));
     }
 
     /**
@@ -88,7 +85,7 @@ class Storage
      * @return mixed
      * @author Tinywan(ShaoBo Wan)
      */
-    public static function getConfig(string $name = null)
+    public static function getConfig(?string $name = null)
     {
         if (!is_null($name)) {
             return config('plugin.tinywan.storage.app.storage.' . $name, self::MODE_LOCAL);

@@ -10,6 +10,4 @@ declare(strict_types=1);
 
 namespace Tinywan\Storage\Exception;
 
-class StorageException extends \RuntimeException
-{
-}
+class StorageException extends \RuntimeException {}

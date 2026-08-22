@@ -28,7 +28,9 @@ abstract class AdapterAbstract implements AdapterInterface
     public $dirSeparator = DIRECTORY_SEPARATOR;
 
     /**
-     * 文件存储对象
+     * 文件存储对象.
+     *
+     * @var UploadFile[]
      */
     protected $files;
 
@@ -80,9 +82,9 @@ abstract class AdapterAbstract implements AdapterInterface
     {
         $this->loadConfig($config);
         $this->dirSeparator = \DIRECTORY_SEPARATOR === '\\' ? '/' : DIRECTORY_SEPARATOR;
-        $this->_isFileUpload = $config['_is_file_upload'] ?? true;
+        $this->_isFileUpload = (bool) ($config['_is_file_upload'] ?? true);
         if ($this->_isFileUpload) {
-            $this->files = request()->file();
+            $this->files = (array) request()->file();
             $this->includes = [];
             $this->excludes = [];
             $this->singleLimit = 0;
@@ -121,7 +123,7 @@ abstract class AdapterAbstract implements AdapterInterface
         $this->singleLimit = $config['single_limit'] ?? $defaultConfig['single_limit'];
         $this->totalLimit = $config['total_limit'] ?? $defaultConfig['total_limit'];
         $this->nums = $config['nums'] ?? $defaultConfig['nums'];
-        $this->algo = $config['algo'] ?? $this->algo;
+        $this->algo = (string) ($config['algo'] ?? $this->algo);
         $this->config = $config;
         $this->config['includes'] = $config['include'] ?? $defaultConfig['include'];
         $this->config['excludes'] = $config['exclude'] ?? $defaultConfig['exclude'];
@@ -161,7 +163,7 @@ abstract class AdapterAbstract implements AdapterInterface
      */
     protected function getSize(UploadFile $file): int
     {
-        return $file->getSize();
+        return (int) $file->getSize();
     }
 
     /**
@@ -171,18 +173,24 @@ abstract class AdapterAbstract implements AdapterInterface
      */
     protected function allowedFile(): bool
     {
-        if ((!empty($this->includes) && !empty($this->config['excludes'])) || !empty($this->config['includes'])) {
+        if (!empty($this->includes) && !empty($this->config['excludes']) || !empty($this->config['includes'])) {
             foreach ($this->files as $file) {
                 $fileName = $file->getUploadName();
-                if (!strpos($fileName, '.') || !in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['includes'])) {
-                    throw new StorageException($file->getUploadName().'，文件扩展名不合法');
+                if (
+                    !strpos($fileName, '.')
+                    || !in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['includes'], true)
+                ) {
+                    throw new StorageException($file->getUploadName() . '，文件扩展名不合法');
                 }
             }
         } elseif (!empty($this->config['excludes']) && empty($this->config['includes'])) {
             foreach ($this->files as $file) {
                 $fileName = $file->getUploadName();
-                if (!strpos($fileName, '.') || in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['excludes'])) {
-                    throw new StorageException($file->getUploadName().'，文件扩展名不合法');
+                if (
+                    !strpos($fileName, '.')
+                    || in_array(substr($fileName, strripos($fileName, '.') + 1), $this->config['excludes'], true)
+                ) {
+                    throw new StorageException($file->getUploadName() . '，文件扩展名不合法');
                 }
             }
         }
@@ -205,12 +213,14 @@ abstract class AdapterAbstract implements AdapterInterface
         foreach ($this->files as $k => $file) {
             $fileSize = $this->getSize($this->files[$k]);
             if ($fileSize > $this->config['single_limit']) {
-                throw new StorageException($file->getUploadName().'，单文件大小已超出系统限制：'.$this->config['single_limit']);
+                throw new StorageException(
+                    $file->getUploadName() . '，单文件大小已超出系统限制：' . $this->config['single_limit'],
+                );
             }
             $totalSize += $fileSize;
         }
         if ($totalSize > $this->config['total_limit']) {
-            throw new StorageException('总文件大小已超出系统最大限制：'.$this->config['total_limit']);
+            throw new StorageException('总文件大小已超出系统最大限制：' . $this->config['total_limit']);
         }
     }
 }
