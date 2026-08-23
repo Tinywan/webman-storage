@@ -19,12 +19,13 @@ return [
         // 本地对象存储
         'local' => [
             'adapter' => \Tinywan\Storage\Adapter\LocalAdapter::class,
-            'root' => runtime_path() . '/storage',
+            'root' => public_path() . '/storage',
             'dirname' => function () {
                 return date('Ymd');
             },
             'domain' => 'http://127.0.0.1:8787',
-            'uri' => '/runtime', // 如果 domain + uri 不在 public 目录下，请做好软链接，否则生成的url无法访问
+            // uri 必须与 root 相对 public 目录的路径一致（此处 root 为 public/storage），否则生成的 url 无法访问
+            'uri' => '/storage',
             'algo' => 'sha1',
             'chunk_path' => runtime_path() . '/storage/.chunks', // 分片上传：分片临时存储目录
         ],
