@@ -217,6 +217,8 @@ $res = \Tinywan\Storage\Storage::disk(\Tinywan\Storage\Storage::MODE_OSS, false)
 ## 🧩 大文件分片上传（本地）
 
 > **使用场景：** 大文件（超出 `upload_max_filesize` 或网络不稳定）由前端切片后逐片上传，服务端校验并合并。目前仅本地适配器支持，云端适配器（OSS/COS/七牛/S3）后续版本支持。
+>
+> 🧪 端到端测试示例见 [`example/`](example/)：示例控制器、路由和 curl 一键测试脚本。
 
 ### 工作流程
 
