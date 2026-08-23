@@ -51,14 +51,17 @@ class LocalAdapter extends AdapterAbstract
     public function uploadFile(array $options = []): array
     {
         $result = [];
-        $basePath = $this->config['root'] . $this->config['dirname'] . DIRECTORY_SEPARATOR;
+        // root 末尾分隔符不确定，统一规整后再拼接日期目录，避免出现 storage20260823 这类错误目录
+        $basePath =
+            rtrim($this->config['root'], '/\\') . DIRECTORY_SEPARATOR . $this->config['dirname'] . DIRECTORY_SEPARATOR;
         if (!$this->createDir($basePath)) {
             throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
         }
 
         $baseUrl =
             $this->config['domain']
-            . $this->config['uri']
+            . rtrim($this->config['uri'], '/')
+            . '/'
             . str_replace(DIRECTORY_SEPARATOR, '/', $this->config['dirname'])
             . DIRECTORY_SEPARATOR;
         foreach ($this->files as $key => $file) {
@@ -221,7 +224,11 @@ class LocalAdapter extends AdapterAbstract
 
             $uniqueId = (string) hash_final($hashContext);
             $extension = substr($file_name, strripos($file_name, '.') + 1);
-            $basePath = $this->config['root'] . $this->config['dirname'] . DIRECTORY_SEPARATOR;
+            $basePath =
+                rtrim($this->config['root'], '/\\')
+                . DIRECTORY_SEPARATOR
+                . $this->config['dirname']
+                . DIRECTORY_SEPARATOR;
             if (!$this->createDir($basePath)) {
                 throw new StorageException('文件夹创建失败，请核查是否有对应权限。');
             }
@@ -236,7 +243,8 @@ class LocalAdapter extends AdapterAbstract
             $this->removeDir($dir);
             $baseUrl =
                 $this->config['domain']
-                . $this->config['uri']
+                . rtrim($this->config['uri'], '/')
+                . '/'
                 . str_replace(DIRECTORY_SEPARATOR, '/', $this->config['dirname'])
                 . DIRECTORY_SEPARATOR;
             $mimeType = function_exists('mime_content_type') ? mime_content_type($savePath) : false;

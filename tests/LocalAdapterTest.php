@@ -67,8 +67,10 @@ test('本地上传文件返回标准信息且文件落盘', function () {
     expect($file['extension'])->toBe('txt');
     expect($file['size'])->toBe(strlen('hello webman storage'));
     expect($file['unique_id'])->toBe($expectedHash);
-    // url = domain + uri + dirname + 分隔符（现有拼接行为）
-    expect($file['url'])->toBe('http://127.0.0.1:8787/storageunit-test/' . $file['save_name']);
+    // url = domain + uri + 分隔符 + dirname（uri 尾部分隔符自动规整）
+    expect($file['url'])->toBe('http://127.0.0.1:8787/storage/unit-test/' . $file['save_name']);
+    // root 无尾部分隔符时，dirname 也必须独立成目录（storage/日期 而非 storage日期）
+    expect($file['save_path'])->toStartWith($root . DIRECTORY_SEPARATOR . 'unit-test' . DIRECTORY_SEPARATOR);
     expect($file['save_path'])->toBeFile();
 });
 
