@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # 大文件分片上传端到端测试脚本：切片 → 逐片上传（md5 校验）→ 查询进度 → 合并 → 校验散列
 #
 # 前置条件：
@@ -10,7 +10,7 @@
 # 环境变量：
 #   CHUNK_SIZE  分片大小，默认 5m（需与配置 chunk_size 一致或更小）
 #   FILE_ID     文件唯一标识，默认自动生成
-set -euo pipefail
+set -eu
 
 FILE="${1:?用法: $0 <待上传文件> [服务地址]}"
 BASE_URL="${2:-http://127.0.0.1:8787}"
@@ -27,20 +27,20 @@ WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
 echo "==> 切片（${CHUNK_SIZE}/片）..."
-split -b "$CHUNK_SIZE" -d "$FILE" "$WORK_DIR/chunk_"
-CHUNKS=("$WORK_DIR"/chunk_*)
-TOTAL=${#CHUNKS[@]}
+split -b "$CHUNK_SIZE" "$FILE" "$WORK_DIR/chunk_"
+TOTAL=$(ls "$WORK_DIR"/chunk_* | wc -l)
 echo "    共 ${TOTAL} 片，file_id=${FILE_ID}"
 
 echo "==> 逐片上传..."
-for i in "${!CHUNKS[@]}"; do
-    CHUNK="${CHUNKS[$i]}"
+i=0
+for CHUNK in "$WORK_DIR"/chunk_*; do
     MD5="$(md5sum "$CHUNK" | awk '{print $1}')"
     echo "    [$((i + 1))/${TOTAL}] $(basename "$CHUNK") md5=${MD5}"
     curl -sf -F "file=@${CHUNK}" -F "file_id=${FILE_ID}" \
         -F "chunk_index=${i}" -F "chunk_md5=${MD5}" \
         "${BASE_URL}/upload/chunk"
     echo
+    i=$((i + 1))
 done
 
 echo "==> 查询上传进度..."
