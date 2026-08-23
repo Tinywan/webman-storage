@@ -50,7 +50,7 @@ class Storage
     /**
      * Support Storage
      */
-    static $allowStorage = [
+    public static $allowStorage = [
         self::MODE_LOCAL,
         self::MODE_OSS,
         self::MODE_COS,
