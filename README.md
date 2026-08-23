@@ -322,6 +322,8 @@ $storage->chunkProgress($fileId, $totalChunks);
 $result = $storage->mergeChunk($fileId, $totalChunks, 'video.mp4');
 ```
 
+> 🧪 端到端测试示例见 [`example/`](example/)：同一套路由通过 `disk` 参数切换本地与云端，如 `DISK=oss ./chunk-upload-test.sh video.mp4`
+
 ### 实现方式
 
 | 云端 | 实现 |
