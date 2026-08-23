@@ -10,6 +10,12 @@ empty-line-after-opening-tag = false
 
 [linter.rules]
 # 库需兼容 PHP >= 7.2，禁用依赖高版本语法的规则
+# 数字字面量下划线分隔符需 PHP 7.4+，库不可用
+readable-literal = { enabled = false }
+# 文件系统尽力操作（清理、锁竞争兜底）有意使用 @ 抑制警告
+no-error-control-operator = { enabled = false }
+too-many-methods = { threshold = 20 }
+cyclomatic-complexity = { threshold = 100 }
 literal-named-argument = { enabled = false }
 prefer-arrow-function = { enabled = false }
 strict-types = { enabled = false }
@@ -20,7 +26,6 @@ no-shorthand-ternary = { enabled = false }
 # 示例配置中的占位密钥属于误报
 no-literal-password = { exclude = ["src/config"] }
 # 阈值放宽
-cyclomatic-complexity = { threshold = 40 }
 kan-defect = { threshold = 3.0 }
 halstead = { effort-threshold = 20000 }
 

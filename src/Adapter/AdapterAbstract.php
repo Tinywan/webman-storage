@@ -111,6 +111,35 @@ abstract class AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * @return array|bool
+     */
+    public function uploadChunk(
+        UploadFile $file,
+        string $file_id,
+        int $chunk_index,
+        string $chunk_md5,
+        array $options = [],
+    ) {
+        return $this->setError(false, '暂不支持');
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function chunkProgress(string $file_id, int $total_chunks)
+    {
+        return $this->setError(false, '暂不支持');
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function mergeChunk(string $file_id, int $total_chunks, string $file_name, array $options = [])
+    {
+        return $this->setError(false, '暂不支持');
+    }
+
+    /**
      * @desc: 加载配置文件
      *
      * @author Tinywan(ShaoBo Wan)
@@ -164,6 +193,23 @@ abstract class AdapterAbstract implements AdapterInterface
     protected function getSize(UploadFile $file): int
     {
         return (int) $file->getSize();
+    }
+
+    /**
+     * @desc: 校验文件名后缀是否被允许（includes 白名单优先，其次 excludes 黑名单，皆空放行）
+     */
+    protected function allowedExtension(string $file_name): bool
+    {
+        $pos = strripos($file_name, '.');
+        $extension = false === $pos ? '' : substr($file_name, $pos + 1);
+        if (!empty($this->config['includes'])) {
+            return '' !== $extension && in_array($extension, $this->config['includes'], true);
+        }
+        if (!empty($this->config['excludes'])) {
+            return '' !== $extension && !in_array($extension, $this->config['excludes'], true);
+        }
+
+        return true;
     }
 
     /**

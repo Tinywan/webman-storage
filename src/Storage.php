@@ -16,6 +16,9 @@ namespace Tinywan\Storage;
  * @method static array uploadFile(array $config = [])  上传文件
  * @method static array uploadBase64(string $base64, string $extension = 'png') 上传Base64文件
  * @method static array uploadServerFile(string $file_path)  上传服务端文件
+ * @method static array uploadChunk(\Webman\Http\UploadFile $file, string $file_id, int $chunk_index, string $chunk_md5, array $options = []) 上传文件分片
+ * @method static array chunkProgress(string $file_id, int $total_chunks) 查询分片上传进度（断点续传）
+ * @method static array mergeChunk(string $file_id, int $total_chunks, string $file_name, array $options = []) 合并文件分片
  */
 class Storage
 {
