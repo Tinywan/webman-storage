@@ -23,7 +23,7 @@
 - 📤 **多文件上传** —— 一次请求上传多个文件，返回结构化结果
 - 🖼️ **Base64 上传** —— 前端截图 / Canvas 数据流直传云端
 - 🗂️ **服务端文件上传** —— 服务端导出文件直接转存云端
-- 🧩 **大文件分片上传** —— 前端切片、逐片校验、断点续传、自动合并（本地存储）
+- 🧩 **大文件分片上传** —— 前端切片、逐片校验、断点续传、自动合并（本地与全部云端存储）
 - 🔒 **上传验证** —— 大小、数量、后缀黑白名单全支持
 
 ### 能力矩阵
@@ -31,10 +31,10 @@
 | 云端              | 多文件上传 | Base64 图片上传 | 服务器文件上传 | 大文件分片上传 |
 | ----------------- | :--------: | :-------------: | :------------: | :------------: |
 | 🍏 私有云（本地） |     ✅     |       —         |       ✅       |       ✅       |
-| 🍓 阿里云          |     ✅     |       ✅        |       ✅       |       —        |
-| 🍋 腾讯云          |     ✅     |       ✅        |       ✅       |       —        |
-| 🍇 七牛云          |     ✅     |       ✅        |       ✅       |       —        |
-| 🌰 亚马逊（S3）    |     ✅     |       ✅        |       ✅       |       —        |
+| 🍓 阿里云          |     ✅     |       ✅        |       ✅       |       ✅       |
+| 🍋 腾讯云          |     ✅     |       ✅        |       ✅       |       ✅       |
+| 🍇 七牛云          |     ✅     |       ✅        |       ✅       |       ✅       |
+| 🌰 亚马逊（S3）    |     ✅     |       ✅        |       ✅       |       ✅       |
 
 ---
 
@@ -308,6 +308,42 @@ $result = \Tinywan\Storage\Storage::disk(\Tinywan\Storage\Storage::MODE_LOCAL, f
 > 1. 分片上传必须使用 `Storage::disk(MODE_LOCAL, false)` 方式调用（跳过 HTTP 文件上传校验）
 > 2. 合并过程有独占锁，重复触发会提示"文件正在合并中"
 > 3. 中断未合并的分片临时目录（`chunk_path` 下）暂不自动清理，请由业务侧定期清理
+
+---
+
+## ☁️ 大文件分片上传（云端）
+
+阿里云 OSS、腾讯云 COS、AWS S3、七牛云同样支持 `uploadChunk` / `chunkProgress` / `mergeChunk`，调用方式与本地完全一致，仅 `disk` 不同：
+
+```php
+$storage = \Tinywan\Storage\Storage::disk('oss', false); // oss / cos / qiniu / s3
+$storage->uploadChunk($file, $fileId, $chunkIndex, $chunkMd5);
+$storage->chunkProgress($fileId, $totalChunks);
+$result = $storage->mergeChunk($fileId, $totalChunks, 'video.mp4');
+```
+
+### 实现方式
+
+| 云端 | 实现 |
+| ---- | ---- |
+| 阿里云 OSS / 腾讯云 COS / AWS S3 | 厂商原生 Multipart Upload：首片自动 `initiate`，逐片 `uploadPart`，合并时 `complete` 后 `copy` 为最终对象并删除临时对象 |
+| 七牛云 | 分片本地暂存，合并后整体 `putFile` 上传（SDK 内部自动断点续传） |
+
+- **会话状态**：OSS / COS / S3 的 `uploadId` 与各分片 ETag 持久化在 `{chunk_path}/{file_id}/session.json`，跨请求续传依赖该文件，请勿在上传期间清理 `chunk_path`
+- **命名策略**：合并时临时对象键为 `{dirname}/{file_id}`（扩展名合并时才确定），`mergeChunk` 完成后统一 copy 改名。传入 `$options['file_hash']`（整文件散列）则最终对象为 `{file_hash}.{ext}`，否则为 `{file_id}.{ext}`
+- **返回结构**：与本地合并一致（`origin_name/save_name/save_path/url/unique_id/size/mime_type/extension`）；云端无本地文件，`mime_type` 取 `$options['mime_type']`，默认 `application/octet-stream`；`unique_id` 为 `file_hash`（未传时为 `file_id`）
+
+```php
+$result = $storage->mergeChunk($fileId, $totalChunks, 'video.mp4', [
+    'file_hash' => $wholeFileSha1,  // 可选：整文件散列，作为最终对象名
+    'mime_type' => 'video/mp4',     // 可选：云端无法探测 MIME，默认 application/octet-stream
+]);
+```
+
+> [!WARNING]
+> 1. 厂商对非末尾分片有最小尺寸要求：S3 ≥ 5MB、COS ≥ 1MB、OSS ≥ 100KB。默认 `chunk_size` 5MB 满足全部厂商，调小需谨慎
+> 2. 中断且未合并的云端 Multipart 会话（含已上传分片）会长期占用存储桶，本库不提供 abort 接口，请由业务侧调用厂商 API 中止，或为存储桶配置"未完成分片上传"生命周期清理规则
+> 3. 七牛云中途中断的本地暂存分片位于 `chunk_path`，同样需业务侧定期清理
 
 ---
 

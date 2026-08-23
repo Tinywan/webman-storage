@@ -1,11 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Tinywan\Storage\Adapter\CosAdapter;
 use Tinywan\Storage\Adapter\LocalAdapter;
-use Tinywan\Storage\Adapter\OssAdapter;
-use Tinywan\Storage\Adapter\QiniuAdapter;
-use Tinywan\Storage\Adapter\S3Adapter;
 use Tinywan\Storage\Exception\StorageException;
 use Webman\Http\UploadFile;
 
@@ -180,16 +176,3 @@ test('合并锁存在时抛异常', function () {
     expect(fn() => $adapter->mergeChunk('demo-file', 1, 'demo.txt'))->toThrow(StorageException::class, '正在合并中');
     @unlink($lockPath);
 });
-
-test('云端适配器暂不支持分片上传', function (string $adapterClass) {
-    $adapter = new $adapterClass(['_is_file_upload' => false, 'dirname' => 'storage']);
-
-    expect($adapter->uploadChunk(makeChunkFile('x'), 'demo-file', 0, md5('x')))
-        ->toBeFalse()
-        ->and($adapter->chunkProgress('demo-file', 1))
-        ->toBeFalse()
-        ->and($adapter->mergeChunk('demo-file', 1, 'demo.txt'))
-        ->toBeFalse()
-        ->and($adapter->getMessage())
-        ->toBe('暂不支持');
-})->with([OssAdapter::class, CosAdapter::class, QiniuAdapter::class, S3Adapter::class]);
